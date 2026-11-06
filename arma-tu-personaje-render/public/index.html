@@ -50,9 +50,9 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 @media (max-width:760px){.rail{flex-direction:row;position:static;justify-content:space-between;padding:6px;gap:2px;overflow-x:auto}.rail .mark{margin:0;width:34px;height:34px;flex:none}.rail a{width:36px;height:36px;flex:none}}
 
 .content{display:flex;flex-direction:column;gap:18px;min-width:0}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 4px 0}
-.top h1{font-family:var(--f-title);font-weight:800;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.01em;margin:0;line-height:1.1}
-.top .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:14px 4px 6px}
+.top h1{font-family:var(--f-title);font-weight:800;font-size:clamp(30px,5vw,52px);letter-spacing:-.02em;margin:0;line-height:1.05;text-wrap:balance;color:#fff;text-shadow:0 0 28px color-mix(in srgb,var(--glow) 70%,transparent),0 2px 0 rgba(0,0,0,.25)}
+.top .eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#cfcfd6;margin-bottom:10px}
 .tools{display:flex;gap:8px}
 .iconbtn{height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);display:inline-flex;align-items:center;gap:8px;font-size:13px}
 .iconbtn:hover{background:var(--card2)}
@@ -243,14 +243,14 @@ const COMPANIES=[
  {id:"paguetodo",name:"Paguetodo",desc:"Fintech de pagos y PaguePOS",
   mass:"#0858ea",line:"#0b1633",hair:"#0b1633",accent:"#ebca0a",alt:"#0b1633",
   massName:"azul", hairName:"navy", accentName:"amarillo", firm:"a fintech company", defColor:"auto",
-  depts:[["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["comercial","Comercial","Commercial"],["marketing","Marketing","Marketing"],
+  depts:[["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["comercial","Comercial","Commercial"],["marketing","Mercadeo","Marketing"],
          ["desarrollo","Desarrollo y sistemas","Development and Systems"],["atencion","Atención al cliente","Customer Service"],["soporte","Soporte técnico","Technical Support"],["operaciones","Operaciones","Operations"]],
   props:["factura","recibo","calculadora","tablet","maletin","llave","portapapeles","laptop","taza","celular"]},
  {id:"ebcorp",name:"e-bCORP",desc:"Consultora SAP SuccessFactors",
   mass:"#155c5c",line:"#0d3333",pline:"#041414",hair:"#155c5c",accent:"#2daf84",alt:WHITE,
   massName:"verde azulado", hairName:"verde azulado", accentName:"verde esmeralda", firm:"a corporate technology consulting firm", defColor:"both",
   depts:[["junta","Junta directiva / Presidencia","Board of Directors / Presidency"],["rrhh","Recursos Humanos","Human Resources"],["sap","Consultores SAP","SAP Consultants"],
-         ["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["marketing","Marketing","Marketing"]],
+         ["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["marketing","Mercadeo","Marketing"]],
   props:["portafolio","portapapeles","laptopab","tablet","carpeta","celular"]},
  {id:"sirvalor",name:"Sirvalor",desc:"Gerencia de servicios",
   mass:"#792e24",line:"#1a2837",hair:"#1a2837",accent:null,alt:"#1a2837",
@@ -305,8 +305,13 @@ const OPT={
     {id:"anillos",name:"Anillos",en:"a couple of thin rings"},
     {id:"cintillo",name:"Cintillo",en:"a simple headband",acc:"the headband"},
     {id:"panoleta",name:"Pañoleta",en:"a small triangular scarf knotted at the neck",acc:"the neck scarf"},
+    {id:"gorra",name:"Gorra",en:"a baseball cap"},
+    {id:"gorro",name:"Gorro",en:"a knit beanie"},
+    {id:"pulseras",name:"Pulseras",en:"a few thin bracelets on one wrist",acc:"one bracelet"},
+    {id:"piercing",name:"Piercing",en:"a small eyebrow piercing",acc:"the piercing"},
+    {id:"tatuajes",name:"Tatuajes",en:"a small simple line-art tattoo on the forearm"},
     {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"}],
-  accOrder:["panoleta","collar","reloj","aretes","cintillo"]
+  accOrder:["panoleta","collar","reloj","aretes","pulseras","piercing","cintillo"]
  },
  m:{
   len:[{id:"rapado",name:"Rapado"},{id:"fadealto",name:"Fade alto"},{id:"fadebajo",name:"Fade bajo"},{id:"corto",name:"Corto"},{id:"largo",name:"Largo"}],
@@ -593,6 +598,7 @@ function accNeck(){
 }
 function accHead(){
   if(male()) return mHats();
+  if(has("gorra")||has("gorro")) return mHats();
   if(!has("cintillo")) return "";
   const d="M122 96 C120 70 134 63 150 63 C166 63 180 70 178 96";
   return `<path d="${d}" fill="none" stroke="${LINE}" stroke-width="8" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${F("cintillo")}" stroke-width="4" stroke-linecap="round"/>`;
@@ -713,7 +719,7 @@ const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const MAX_ACC=4;
 function flashAccLimit(){const n=document.getElementById("accCount"); if(!n) return; n.textContent=`Máximo ${MAX_ACC} accesorios: quita uno para elegir otro`; n.style.color="#ffb84d"; clearTimeout(flashAccLimit.t); flashAccLimit.t=setTimeout(()=>{n.style.color="";paintAccCount();},2200);}
 function paintAccCount(){const n=document.getElementById("accCount"); if(n) n.textContent=`${X.acc.length} de ${MAX_ACC} elegidos`; const box=document.getElementById("accRows"); if(box) box.classList.toggle("acc-full", X.acc.length>=MAX_ACC);}
-const LOGOS={paguetodo:'<img src="/logos/paguetodo.png" alt="Paguetodo">',sirvalor:'<img class="halo" src="/logos/sirvalor.png" alt="Sirvalor">',ebcorp:'<img src="/logos/ebcorp.png" alt="e-bCORP">'};
+const LOGOS={paguetodo:'<img src="/logos/paguetodo.png" alt="Paguetodo">',sirvalor:'<img src="/logos/sirvalor.png" alt="Sirvalor">',ebcorp:'<img src="/logos/ebcorp.png" alt="e-bCORP">'};
 function renderCompanies(){
   document.getElementById("coOpts").innerHTML=COMPANIES.map(c=>`<button type="button" class="cobtn" id="co-${c.id}" data-co="${c.id}" aria-pressed="false" aria-label="${c.name}">
     <span class="logo">${LOGOS[c.id]||c.name}</span></button>`).join("");
