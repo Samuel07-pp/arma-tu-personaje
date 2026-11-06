@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,"Segoe UI",sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Arma tu personaje</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: lienzo fijo del personaje a la izquierda; panel por secciones (Empresa, Cabello, Outfit, Accesorios, Contexto) a la derecha; confirmación y prompt al pie */
+:root{
+  --bg:#f3f6fc; --paper:#fbfcfe; --surface:#ffffff; --fg:#0b1633; --muted:#5a6788;
+  --line:#d7def0; --blue:#0858ea; --blue2:#0879eb; --soft:#e6eefe; --yellow:#ebca0a; --ok:#1f9d55;
+  --f-display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#070d1f; --paper:#f4f6fb; --surface:#0f1830; --fg:#e8edf9; --muted:#9aa8c8;
+  --line:#22305a; --blue:#3d7dff; --blue2:#4b93ff; --soft:#16244a; --ok:#2fb86a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#070d1f; --paper:#f4f6fb; --surface:#0f1830; --fg:#e8edf9; --muted:#9aa8c8;
+  --line:#22305a; --blue:#3d7dff; --blue2:#4b93ff; --soft:#16244a; --ok:#2fb86a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1160px;margin:0 auto;padding-block:28px 48px;
+  padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:600}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,4.4vw,42px);line-height:1.05;margin:4px 0 0;text-wrap:balance;letter-spacing:-.01em}
+.lede{color:var(--muted);max-width:58ch;margin:6px 0 0}
+.hbtns{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:9px 14px;border-radius:999px;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--blue)}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button:focus-visible,select:focus-visible{outline:2px solid var(--blue2);outline-offset:2px}
+
+.main{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:22px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:1fr}}
+.stagecol{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px)}
+@media (max-width:860px){.stagecol{position:static}}
+.stage{background:var(--paper);border-radius:18px;position:relative;overflow:hidden;min-width:0;
+  border:1px solid var(--line);aspect-ratio:3/4;max-width:100%;display:flex;align-items:center;justify-content:center}
+.stage::before{content:"";position:absolute;inset:0;opacity:.35;pointer-events:none;
+  background-image:radial-gradient(#0b163314 1px, transparent 1px);background-size:14px 14px}
+.stage svg{width:84%;height:auto;max-height:90%;position:relative}
+.tag{position:absolute;left:14px;top:14px;font-family:var(--f-mono);font-size:11px;color:#5a6788;background:#ffffffd9;padding:4px 8px;border-radius:6px}
+.legend{position:absolute;left:14px;right:14px;bottom:14px;display:flex;flex-wrap:wrap;gap:6px}
+.legend span.l{font-size:12px;background:#fff;color:#0b1633;border:1px solid #d7def0;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+
+.panel{display:flex;flex-direction:column;gap:14px;min-width:0}
+.sec{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.sec h2{font-family:var(--f-display);font-weight:600;font-size:20px;margin:0}
+.row{display:flex;flex-direction:column;gap:7px}
+.rowhead{display:flex;justify-content:space-between;gap:8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.rowhead em{font-style:normal;text-transform:none;letter-spacing:0;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--fg);padding:7px 13px;border-radius:999px;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+.chip:hover{border-color:var(--blue2)}
+.chip[aria-pressed="true"]{border-color:var(--blue);background:var(--blue);color:#fff}
+.chip:disabled{opacity:.5;cursor:not-allowed;border-style:dashed}
+.chip.multi[aria-pressed="true"]{background:var(--soft);color:var(--fg)}
+.chip.multi .ck{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--line);display:inline-flex;align-items:center;justify-content:center}
+.chip.multi[aria-pressed="true"] .ck{background:var(--blue);border-color:var(--blue)}
+.chip.multi[aria-pressed="true"] .ck::after{content:"";width:6px;height:3px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.co{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cobtn{border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:10px 12px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0}
+.cobtn b{font-size:14px;font-weight:600}
+.cobtn small{font-size:11.5px;color:var(--muted);line-height:1.3}
+.cobtn .sw{display:flex;gap:4px}
+.cobtn .sw i{width:16px;height:16px;border-radius:50%;border:1px solid #0000001a}
+.cobtn[aria-pressed="true"]{border-color:var(--blue);background:var(--soft)}
+.cobtn:disabled{cursor:not-allowed;border-style:dashed;opacity:.7}
+@media (max-width:480px){.co{grid-template-columns:1fr}}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;align-self:flex-start;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--fg);padding:6px 12px;font-size:13px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--soft);color:var(--blue);font-weight:600}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.fields{grid-template-columns:1fr}}
+label{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;flex-direction:column;gap:6px;min-width:0}
+select{font:inherit;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400;color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+.rows{display:flex;flex-direction:column;gap:14px}
+.note{font-size:12.5px;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+.note .dot{margin-top:5px}
+
+.confirm{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px}
+.confirm[data-state="ok"]{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 9%,var(--surface))}
+.confirm[data-state="dirty"]{border-color:var(--yellow)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff;display:inline-flex;align-items:center;gap:8px}
+.btn.ok:disabled{opacity:.6;cursor:default}
+.btn.ok svg{width:16px;height:16px}
+.namefield{flex:1 1 220px;max-width:320px}
+.namefield input{font:inherit;font-size:14px;text-transform:none;letter-spacing:0;font-weight:400;color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+.namefield input:focus-visible{outline:2px solid var(--blue2);outline-offset:2px}
+.confirm[data-state="error"]{border-color:#d64545}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.cmsg{font-size:13px;color:var(--muted);flex:1 1 100%;min-width:200px}
+.promptbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.phead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.phead h2{font-family:var(--f-display);font-weight:600;font-size:20px;margin:0}
+pre{margin:0;font-family:var(--f-mono);font-size:12.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--fg);
+  background:var(--bg);border-radius:10px;padding:14px;max-height:280px;overflow:auto}
+.sources{display:flex;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--muted)}
+.sources span{border:1px dashed var(--line);border-radius:8px;padding:5px 9px}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Jugamos alineados · Paguetodo, e-bCORP y Sirvalor</div>
+      <h1>Arma tu personaje</h1>
+      <p class="lede">Elige la empresa y arma el personaje de su departamento. Cada empresa conserva su paleta, sus departamentos y sus objetos; el estilo de ilustración es el mismo para las tres.</p>
+    </div>
+    <div class="hbtns">
+      <button class="btn" id="rnd" type="button">Combinación aleatoria</button>
+      <button class="btn" id="reset" type="button">Restablecer</button>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="stagecol">
+      <div class="stage">
+        <span class="tag" id="tagline">Vista previa</span>
+        <svg id="preview" viewBox="0 0 300 440" role="img" aria-label="Vista previa del personaje"></svg>
+        <div class="legend">
+          <span class="l"><i class="dot" id="lgMassDot"></i><span id="lgMass">Color</span></span>
+          <span class="l"><i class="dot" id="lgHairDot"></i><span id="lgHair">Cabello</span></span>
+          <span class="l"><i class="dot" id="lgAccDot"></i><span id="lgAcc">Acento</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <section class="sec" aria-labelledby="s-emp">
+        <h2 id="s-emp">Empresa</h2>
+        <div class="co" id="coOpts"></div>
+      </section>
+
+      <section class="sec" aria-labelledby="s-sex">
+        <h2 id="s-sex">Personaje</h2>
+        <div class="seg" id="sexSeg"><button type="button" id="sx-f" data-sex="f">Femenino</button><button type="button" id="sx-m" data-sex="m">Masculino</button></div>
+      </section>
+
+      <section class="sec" aria-labelledby="s-cab">
+        <h2 id="s-cab">Cabello y rostro</h2>
+        <div id="hairRows" class="rows"></div>
+      </section>
+
+      <section class="sec" aria-labelledby="s-out">
+        <h2 id="s-out">Outfit</h2>
+        <div id="outRows" class="rows"></div>
+        <div class="row"><div class="rowhead">Prenda en color <em id="colorHint"></em></div>
+          <div class="seg" id="colorSeg"><button type="button" id="c-top" data-color="top">Superior</button><button type="button" id="c-bottom" data-color="bottom">Inferior</button><button type="button" id="c-both" data-color="both">Ambas</button></div>
+        </div>
+      </section>
+
+      <section class="sec" aria-labelledby="s-acc">
+        <h2 id="s-acc">Accesorios</h2>
+        <div id="accRows" class="rows"></div>
+        <div class="note"><i class="dot" id="noteDot"></i><span id="noteTxt"></span></div>
+      </section>
+
+      <section class="sec" aria-labelledby="s-ctx">
+        <h2 id="s-ctx">Contexto para el prompt</h2>
+        <div class="fields">
+          <label for="dept">Departamento<select id="dept"></select></label>
+          <label for="pose">Pose<select id="pose"></select></label>
+          <label for="prop">Objeto en la mano<select id="prop"></select></label>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <form class="confirm" id="confirmBox" data-state="idle" novalidate>
+    <label for="nombre" class="namefield">Tu nombre<input id="nombre" name="nombre" type="text" autocomplete="name" maxlength="80" placeholder="Nombre y apellido" required></label>
+    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+    <button class="btn ok" id="confirmBtn" type="submit"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Generar personaje</button>
+    <span class="cmsg" id="confirmMsg">Cuando termines de combinar, escribe tu nombre y pulsa Generar personaje. Tu selección llega al equipo de marca, que generará la ilustración.</span>
+  </form>
+
+  <section class="promptbox">
+    <div class="phead">
+      <h2>Prompt para Magnific</h2>
+      <button class="btn primary" id="copy" type="button">Copiar prompt</button>
+    </div>
+    <pre id="prompt"></pre>
+    <div class="sources">
+      <span id="srcCo">Estilo base: serie de personajes por departamento</span>
+    </div>
+  </section>
+</div>
+
+<script>
+const WHITE="#ffffff";
+/* ---------- Empresas ---------- */
+const COMPANIES=[
+ {id:"paguetodo",name:"Paguetodo",desc:"Fintech de pagos y PaguePOS",
+  mass:"#0858ea",line:"#0b1633",hair:"#0b1633",accent:"#ebca0a",alt:"#0b1633",
+  massName:"azul", hairName:"navy", accentName:"amarillo", firm:"a fintech company", defColor:"auto",
+  depts:[["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["comercial","Comercial","Commercial"],["marketing","Marketing","Marketing"],
+         ["desarrollo","Desarrollo y sistemas","Development and Systems"],["atencion","Atención al cliente","Customer Service"],["soporte","Soporte técnico","Technical Support"],["operaciones","Operaciones","Operations"]],
+  props:["factura","recibo","calculadora","tablet","maletin","llave","portapapeles","laptop","taza","celular"]},
+ {id:"ebcorp",name:"e-bCORP",desc:"Consultora SAP SuccessFactors",
+  mass:"#155c5c",line:"#0d3333",pline:"#041414",hair:"#155c5c",accent:"#2daf84",alt:WHITE,
+  massName:"verde azulado", hairName:"verde azulado", accentName:"verde esmeralda", firm:"a corporate technology consulting firm", defColor:"both",
+  depts:[["junta","Junta directiva / Presidencia","Board of Directors / Presidency"],["rrhh","Recursos Humanos","Human Resources"],["sap","Consultores SAP","SAP Consultants"],
+         ["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["marketing","Marketing","Marketing"]],
+  props:["portafolio","portapapeles","laptopab","tablet","carpeta","celular"]},
+ {id:"sirvalor",name:"Sirvalor",desc:"Gerencia de servicios",
+  mass:"#792e24",line:"#1a2837",hair:"#1a2837",accent:null,alt:"#1a2837",
+  massName:"vinotinto", hairName:"azul marino", accentName:"", firm:"a company", defColor:"auto",
+  depts:[["servicios","Gerencia de servicios","Services Management (Gerencia de servicios)"]],
+  props:["tabletcheck","portapapeles","carpeta","laptopab","celular","maletin"]}
+];
+const PROPS={
+  none:{name:"Ninguno",en:"",short:""},
+  factura:{name:"Factura",en:"holding up a single paper invoice sheet with a small zigzag torn bottom edge and a few short lines suggesting rows and a total, no readable text",short:"the invoice"},
+  recibo:{name:"Recibo largo",en:"holding up a long paper receipt ribbon that curls down in loops toward the floor",short:"the receipt"},
+  calculadora:{name:"Calculadora",en:"holding a small oversized calculator",short:"the calculator"},
+  tablet:{name:"Tablet",en:"holding a tablet turned outward toward the viewer with a simple blank screen",short:"the tablet"},
+  maletin:{name:"Maletín",en:"carrying a small briefcase with a little upward arrow sticker",short:"the briefcase sticker"},
+  llave:{name:"Llave ajustable",en:"holding a big adjustable wrench resting on {pr} shoulder",short:"the wrench"},
+  portapapeles:{name:"Portapapeles",en:"holding a clipboard with a pencil clipped on top",short:"the pencil on the clipboard"},
+  laptop:{name:"Laptop cerrada",en:"carrying a closed slim laptop under {pr} arm",short:"the laptop"},
+  taza:{name:"Taza de café",en:"holding a coffee mug with a small curl of steam",short:"the coffee mug"},
+  celular:{name:"Celular",en:"holding a smartphone with a blank screen",short:"the phone screen"},
+  portafolio:{name:"Portafolio de cuero",en:"holding a slim leather portfolio against {pr} side",short:"the portfolio clasp"},
+  laptopab:{name:"Laptop abierta",en:"holding an open laptop in one arm",short:"the laptop screen"},
+  tabletcheck:{name:"Tablet con checklist",en:"holding a tablet showing a simple checklist with three check marks",short:"the check marks"},
+  carpeta:{name:"Carpeta",en:"holding a slim folder",short:"the folder tab"}
+};
+
+/* ---------- Opciones por sexo ---------- */
+const BOTTOMS=[
+  {id:"skinny",name:"Pantalón skinny",en:"skinny trousers",cName:"the skinny trousers",word:"trousers"},
+  {id:"oversizep",name:"Pantalón oversize",en:"wide-leg oversized trousers",cName:"the wide-leg trousers",word:"trousers"},
+  {id:"ejecutivo",name:"Pantalón ejecutivo",en:"tailored straight executive trousers with a center crease",cName:"the executive trousers",word:"trousers"},
+  {id:"sport",name:"Pantalón sport",en:"sporty jogger trousers with elastic ankle cuffs and a thin side stripe",cName:"the jogger trousers",word:"joggers"}];
+const OPT={
+ f:{
+  len:[{id:"largo",name:"Largo",en:"long"},{id:"medio",name:"Medio",en:"shoulder-length"},{id:"corto",name:"Corto",en:"short"}],
+  style:[{id:"suelto",name:"Suelto"},{id:"mediacola",name:"Media cola"},{id:"unacola",name:"Una cola"},{id:"doscolas",name:"Dos colas"},{id:"recogido",name:"Recogido"},{id:"dosmonos",name:"Dos moños"}],
+  bangs:[{id:"none",name:"Sin pollina",en:""},{id:"larga",name:"Pollina larga",en:"long straight-cut bangs down to the eyebrows"},{id:"corta",name:"Pollina corta",en:"short baby bangs"},{id:"lado",name:"Pollina de lado",en:"side-swept bangs"}],
+  type:[{id:"liso",name:"Liso",en:"sleek straight"},{id:"ondulado",name:"Ondulado",en:"wavy"},{id:"rizado",name:"Rizado",en:"curly"}],
+  top:[
+    {id:"oversize",name:"Oversize",en:"an oversized t-shirt with dropped shoulders",cName:"the oversized t-shirt",auto:"bottom"},
+    {id:"blusa",name:"Blusa",en:"a long-sleeve blouse with buttoned cuffs and a small bow at the neckline",cName:"the blouse",auto:"bottom"},
+    {id:"blazer",name:"Blazer",en:"a structured blazer over a plain white top",cName:"the blazer",auto:"top"},
+    {id:"jacket",name:"Jacket",en:"a casual zip-up jacket worn open over a plain white t-shirt",cName:"the jacket",auto:"top"},
+    {id:"hoodie",name:"Hoodie",en:"an oversized hoodie with drawstrings",cName:"the hoodie",auto:"top"}],
+  bottom:[BOTTOMS[0],{id:"falda",name:"Falda",en:"a knee-length A-line skirt",cName:"the skirt",word:"skirt"},BOTTOMS[1],BOTTOMS[2],BOTTOMS[3]],
+  shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"tacones",name:"Tacones",en:"pointed-toe heels"},{id:"casuales",name:"Casuales",en:"simple ballet flats"},{id:"formales",name:"Formales",en:"polished formal loafers"}],
+  acc:[
+    {id:"lentes",name:"Lentes",en:"large round thin-rimmed glasses"},
+    {id:"audifonos",name:"Audífonos",en:"big over-ear headphones resting around the neck"},
+    {id:"aretes",name:"Aretes",en:"small hoop earrings",acc:"the earrings"},
+    {id:"reloj",name:"Reloj",en:"a thin wristwatch",acc:"the watch face"},
+    {id:"collar",name:"Collar",en:"a delicate necklace with a small round pendant",acc:"the necklace pendant"},
+    {id:"anillos",name:"Anillos",en:"a couple of thin rings"},
+    {id:"cintillo",name:"Cintillo",en:"a simple headband",acc:"the headband"},
+    {id:"panoleta",name:"Pañoleta",en:"a small triangular scarf knotted at the neck",acc:"the neck scarf"},
+    {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"}],
+  accOrder:["panoleta","collar","reloj","aretes","cintillo"]
+ },
+ m:{
+  len:[{id:"rapado",name:"Rapado"},{id:"fadealto",name:"Fade alto"},{id:"fadebajo",name:"Fade bajo"},{id:"corto",name:"Corto"},{id:"largo",name:"Largo"}],
+  style:[{id:"lado",name:"De lado"},{id:"mullet",name:"Mullet"},{id:"librito",name:"Librito"},{id:"atras",name:"Hacia atrás"},{id:"cola",name:"Con cola"},{id:"mediacola",name:"Media cola"},{id:"adelante",name:"Hacia adelante"}],
+  type:[{id:"liso",name:"Liso",en:"straight"},{id:"ondulado",name:"Ondulado",en:"wavy"},{id:"rizado",name:"Rizado",en:"curly"}],
+  face:[{id:"sin",name:"Sin barba",en:"clean-shaven"},{id:"barba",name:"Con barba",en:"a neat short full beard"},{id:"bigote",name:"Bigote",en:"a thick mustache"},
+        {id:"perilla",name:"Perilla",en:"a small goatee"},{id:"patillas",name:"Patillas",en:"long sideburns"},{id:"candado",name:"Candado",en:"a circle beard with the mustache connected to a goatee"}],
+  top:[
+    {id:"oversize",name:"Oversize",en:"an oversized t-shirt with dropped shoulders",cName:"the oversized t-shirt",auto:"bottom"},
+    {id:"jacket",name:"Jacket",en:"a casual zip-up jacket worn open over a plain white t-shirt",cName:"the jacket",auto:"top"},
+    {id:"chaleco",name:"Chaleco",en:"a knit V-neck sweater vest over a white long-sleeve collared shirt",cName:"the vest",auto:"top"},
+    {id:"hoodie",name:"Hoodie con capucha",en:"a hoodie with drawstrings and the hood resting behind the neck",cName:"the hoodie",auto:"top"},
+    {id:"franela",name:"Franela",en:"a fitted crew-neck t-shirt",cName:"the t-shirt",auto:"bottom"},
+    {id:"polo",name:"Polo",en:"a short-sleeve polo shirt with a buttoned placket",cName:"the polo shirt",auto:"top"}],
+  bottom:BOTTOMS,
+  shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"casuales",name:"Casuales",en:"casual canvas slip-on shoes"},{id:"formales",name:"Formales",en:"polished formal oxford shoes"}],
+  acc:[
+    {id:"aretes",name:"Aretes",en:"a small stud earring",acc:"the earring"},
+    {id:"gorra",name:"Gorra",en:"a baseball cap"},
+    {id:"gorro",name:"Gorro",en:"a knit beanie"},
+    {id:"pulseras",name:"Pulseras",en:"a few thin bracelets on one wrist",acc:"one bracelet"},
+    {id:"piercing",name:"Piercing",en:"a small eyebrow piercing",acc:"the piercing"},
+    {id:"lentes",name:"Lentes",en:"thin-rimmed glasses"},
+    {id:"tatuajes",name:"Tatuajes",en:"a small simple line-art tattoo on the forearm"},
+    {id:"audifonos",name:"Audífonos",en:"big over-ear headphones resting around the neck"},
+    {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"}],
+  accOrder:["pulseras","aretes","piercing"]
+ }
+};
+const ROWS={
+ f:{hair:[["len","Largo"],["style","Estilo"],["bangs","Pollina","combínala con cualquier estilo"],["type","Tipo"]],out:[["top","Parte superior"],["bottom","Parte inferior"],["shoes","Zapatos"]]},
+ m:{hair:[["len","Cabello"],["style","Estilo","el rapado no lleva estilo"],["type","Tipo"],["face","Rostro"]],out:[["top","Parte superior"],["bottom","Parte inferior"],["shoes","Zapatos"]]}
+};
+const POSES=[
+  {id:"cadera",name:"Mano en la cadera",en:"Full body, standing, relaxed three-quarter stance with one hand on {pr} hip"},
+  {id:"camina",name:"Caminando al frente",en:"Full body, caught mid-stride walking toward the viewer with energy, a couple of small motion lines at {pr} feet"},
+  {id:"brazos",name:"Brazos cruzados",en:"Full body, standing straight facing the viewer with a confident posture"},
+  {id:"saluda",name:"Saludando",en:"Full body, standing in a relaxed three-quarter pose"}];
+
+/* ---------- Estado ---------- */
+const DEF={sex:"f",company:"paguetodo",color:"top",dept:"comercial",pose:"cadera",prop:"tablet",
+  f:{len:"largo",style:"suelto",bangs:"lado",type:"ondulado",top:"blazer",bottom:"ejecutivo",shoes:"formales",acc:["aretes"]},
+  m:{len:"fadebajo",style:"lado",type:"ondulado",face:"barba",top:"jacket",bottom:"ejecutivo",shoes:"tenis",acc:["reloj"]}};
+DEF.m.acc=["pulseras"];
+const KEY="arma-personaje-v4";
+const clone=o=>JSON.parse(JSON.stringify(o));
+let st=load();
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.f&&s.m){const d=clone(DEF);Object.assign(d,s);d.f=Object.assign(clone(DEF.f),s.f);d.m=Object.assign(clone(DEF.m),s.m);return d;}}catch(e){}return clone(DEF);}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+let X=st[st.sex];
+const O=()=>OPT[st.sex];
+const find=(g,id)=>O()[g].find(o=>o.id===id);
+const co=()=>COMPANIES.find(c=>c.id===st.company)||COMPANIES[0];
+const male=()=>st.sex==="m";
+function firstAccent(){if(!co().accent) return null; return O().accOrder.find(k=>X.acc.includes(k))||null;}
+function accentItem(){if(!co().accent) return null;const k=firstAccent(); if(k) return find("acc",k).acc; return st.prop!=="none"?PROPS[st.prop].short:null;}
+const accentIsAcc=k=>firstAccent()===k;
+
+/* ---------- Paleta activa ---------- */
+let LINE,HAIR,MASS,ACC,ALT,S,HS,HC;
+function setPal(){const c=co();LINE=c.pline||c.line;HAIR=c.hair;MASS=c.mass;ACC=c.accent;ALT=c.alt;
+  S=`stroke="${LINE}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"`;
+  HS=c.pline?LINE:c.hair; HC=c.pline?` stroke="${LINE}" stroke-width="2.4"`:"";}
+
+/* ---------- Utilidades de cabello ---------- */
+function qpt(p0,p1,p2,t){const u=1-t;return [u*u*p0[0]+2*u*t*p1[0]+t*t*p2[0], u*u*p0[1]+2*u*t*p1[1]+t*t*p2[1]];}
+function qtan(p0,p1,p2,t){const u=1-t;let x=2*u*(p1[0]-p0[0])+2*t*(p2[0]-p1[0]),y=2*u*(p1[1]-p0[1])+2*t*(p2[1]-p1[1]);const l=Math.hypot(x,y)||1;return [x/l,y/l];}
+function tail(p0,p1,p2,w0,type,flip,loose){
+  const N=26, L=[], R=[]; let circles="", under="";
+  for(let i=0;i<=N;i++){
+    const t=i/N, c=qpt(p0,p1,p2,t), d=qtan(p0,p1,p2,t), n=[-d[1],d[0]];
+    let w=loose? w0*(1-0.25*t) : w0*(t<.14?0.45+t*3.9:1)*(1-0.5*t);
+    if(t>.9) w*=(1-t)/0.1*0.7+0.3;
+    let off=0; if(type==="ondulado") off=Math.sin(t*Math.PI*3)*w0*0.3*(0.3+t)*(flip?-1:1);
+    const cx=c[0]+n[0]*off, cy=c[1]+n[1]*off;
+    L.push([cx+n[0]*w/2, cy+n[1]*w/2]); R.push([cx-n[0]*w/2, cy-n[1]*w/2]);
+    if(type==="rizado" && i%2===0 && t<0.97){const r=w*0.62+2;
+      if(HC) under+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r+1.2).toFixed(1)}" fill="${LINE}"/>`;
+      circles+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${HAIR}"/>`;}
+  }
+  if(type==="rizado") return under+circles;
+  const pts=L.concat(R.reverse()).map(p=>p[0].toFixed(1)+" "+p[1].toFixed(1));
+  return `<path d="M${pts.join(" L")} Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+}
+function tie(x,y,r){return `<rect x="${x-5}" y="${y-4}" width="10" height="8" rx="3" transform="rotate(${r} ${x} ${y})" fill="${WHITE}" ${S}/>`;}
+function bun(cx,cy,r,T){
+  if(T==="rizado"){let c="";[[0,0],[-.7,.2],[.7,.2],[-.4,-.6],[.4,-.6],[0,.5]].forEach(p=>c+=`<circle cx="${cx+p[0]*r}" cy="${cy+p[1]*r}" r="${r*0.62}" fill="${HAIR}"${HC}/>`);return c;}
+  let s=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${HAIR}"${HC}/>`;
+  s+= T==="ondulado" ? `<path d="M${cx-r*0.5} ${cy} q${r*0.5} ${-r*0.6} ${r*0.7} 0 q0 ${r*0.5} ${-r*0.5} ${r*0.4}" fill="none" stroke="${WHITE}" stroke-width="1.6" stroke-linecap="round"/>`
+                     : `<path d="M${cx-r*0.6} ${cy+r*0.2} Q${cx} ${cy-r*0.6} ${cx+r*0.6} ${cy+r*0.2}" fill="none" stroke="${WHITE}" stroke-width="1.6" stroke-linecap="round"/>`;
+  return s;
+}
+function capPath(endY){return `M121 ${endY} C117 72 132 64 150 64 C168 64 183 72 179 ${endY} C174 86 164 79 150 79 C136 79 126 86 121 ${endY}Z`;}
+function curlEdge(){let s="";[[122,98],[123,86],[129,75],[139,68],[150,66],[161,68],[171,75],[177,86],[178,98]].forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="7" fill="${HAIR}"${HC}/>`);return s;}
+
+/* ---------- Cabello femenino ---------- */
+const LIF={corto:0,medio:1,largo:2};
+function fLooseLen(){return [40,82,140][LIF[X.len]];}
+function fHairBack(){
+  const L=LIF[X.len], T=X.type;
+  if(X.style==="unacola") return tail([160,64],[236,30],[222,64+[60,115,175][L]],[22,28,34][L],T,false)+tie(162,66,-25);
+  if(X.style==="recogido"){const r=[13,17,22][L];return bun(150,60-r*0.5,r,T);}
+  if(X.style==="dosmonos"){const r=[11,14,17][L];return bun(124,62,r,T)+bun(176,62,r,T);}
+  if(X.style==="suelto"||X.style==="mediacola"){
+    const Y=80+fLooseLen()*0.9;
+    let s=`<path d="M120 86 L180 86 L182 ${Y} L118 ${Y} Z" fill="${HAIR}"/>`;
+    if(X.style==="mediacola") s+=tail([150,62],[180,38],[184,72],16,T,false,false)+tie(152,64,-30);
+    return s;
+  }
+  return "";
+}
+function fHairSides(){
+  const L=LIF[X.len], T=X.type;
+  if(X.style==="doscolas"){const len=[38,82,140][L], w=[20,24,28][L];
+    return tail([124,86],[96,96],[102,86+len],w,T,false)+tail([176,86],[204,96],[198,86+len],w,T,true)+tie(123,86,20)+tie(177,86,-20);}
+  if(X.style==="suelto"||X.style==="mediacola"){const len=fLooseLen(), w=X.style==="suelto"?[22,24,26][L]:[18,20,22][L];
+    return tail([124,82],[110,104],[113,82+len],w,T,false,true)+tail([176,82],[190,104],[187,82+len],w,T,true,true);}
+  return "";
+}
+function fHairCap(){
+  const T=X.type;
+  let s=`<path d="${capPath(104)}" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  if(T==="rizado"){s+=curlEdge(); if(X.bangs==="none") s+=`<circle cx="138" cy="80" r="5" fill="${HAIR}"/><circle cx="150" cy="78" r="5" fill="${HAIR}"/><circle cx="162" cy="80" r="5" fill="${HAIR}"/>`;}
+  else if(T==="ondulado" && X.style!=="suelto" && X.style!=="mediacola") s+=`<path d="M123 96 q-6 8 0 14 q4 6 -1 12 M177 96 q6 8 0 14 q-4 6 1 12" fill="none" stroke="${HAIR}" stroke-width="3" stroke-linecap="round"/>`;
+  else if(T==="liso" && X.bangs==="none") s+=`<path d="M142 66 Q146 72 140 80" fill="none" stroke="${WHITE}" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>`;
+  return s+fBangs();
+}
+function fBangs(){
+  const b=X.bangs, T=X.type; if(b==="none") return "";
+  let s, bottom=b==="larga"?88:80;
+  if(b==="lado") s=`<path d="M122 100 C122 74 136 66 152 66 C168 66 178 76 178 92 C168 82 150 82 126 98 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  else s=`<path d="M122 ${bottom+6} C122 72 136 66 150 66 C164 66 178 72 178 ${bottom+6} C170 ${bottom} 160 ${bottom} 150 ${bottom} C140 ${bottom} 130 ${bottom} 122 ${bottom+6} Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  if(T==="rizado"){const pts=b==="lado"?[[130,92],[140,86],[151,82],[162,82],[172,86]]:[130,140,150,160,170].map(x=>[x,bottom]);pts.forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="5.5" fill="${HAIR}"/>`);}
+  else if(T==="ondulado" && b!=="lado") s+=`<path d="M128 ${bottom+1} q5 4 10 0 q5 4 10 0 q5 4 10 0 q5 4 10 0" fill="none" stroke="${HAIR}" stroke-width="3" stroke-linecap="round"/>`;
+  return s;
+}
+
+/* ---------- Cabello y rostro masculino ---------- */
+const mLong=()=>X.len==="largo";
+function mHairBack(){
+  if(X.len==="rapado") return "";
+  const T=X.type; let s="";
+  if(X.style==="mullet"){const Y=mLong()?182:150;
+    s+=`<path d="M126 92 L174 92 L176 ${Y-10} Q150 ${Y+6} 124 ${Y-10} Z" fill="${HAIR}"${HC}/>`;
+    if(T==="rizado") [132,150,168].forEach(x=>s+=`<circle cx="${x}" cy="${Y-8}" r="8" fill="${HAIR}"${HC}/>`);
+    return s;}
+  if(X.style==="cola") return bun(150,58,mLong()?15:11,T)+tie(150,66,0);
+  if(X.style==="mediacola") s+=tail([150,62],[176,40],[178,70],mLong()?16:12,T,false,false)+tie(152,64,-30);
+  if(mLong()&&["lado","librito","atras","adelante","mediacola"].includes(X.style)) s+=`<path d="M120 86 L180 86 L182 150 L118 150 Z" fill="${HAIR}"/>`;
+  return s;
+}
+function mHairSides(){
+  if(!mLong()||!["lado","librito","atras","adelante","mediacola"].includes(X.style)) return "";
+  return tail([124,82],[112,104],[115,160],20,X.type,false,true)+tail([176,82],[188,104],[185,160],20,X.type,true,true);
+}
+function mHairCap(){
+  const T=X.type, L=X.len;
+  if(L==="rapado") return `<path d="${capPath(98)}" fill="${HAIR}" opacity=".45"/>`;
+  const fade=L==="fadealto"||L==="fadebajo";
+  let s="";
+  if(fade){
+    s+= L==="fadebajo" ? `<path d="M120 90 L127 88 L127 106 L121 106 Z M180 90 L173 88 L173 106 L179 106 Z" fill="${HAIR}"/>`
+                       : `<path d="M120 96 L126 95 L126 106 L121 106 Z M180 96 L174 95 L174 106 L179 106 Z" fill="${HAIR}" opacity=".4"/>`;
+  }
+  const endY = fade?90:(X.style==="atras"||X.style==="cola"?100:104);
+  s+=`<path d="${capPath(endY)}" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  const st2=X.style;
+  if(st2==="lado") s+=`<path d="M126 70 C138 52 170 52 178 72 C168 66 150 66 126 70Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/><path d="M124 90 C134 66 166 62 180 84 C168 74 148 74 124 90Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/>`;
+  else if(st2==="atras") s+=`<path d="M126 74 C128 50 172 50 174 74 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/><path d="M136 70 Q146 58 160 60 M140 76 Q150 66 166 68" fill="none" stroke="${WHITE}" stroke-width="1.5" stroke-linecap="round"/>`;
+  else if(st2==="librito") s+=`<path d="M150 66 L150 78" stroke="${WHITE}" stroke-width="1.6"/><path d="M150 72 C138 72 128 82 124 98 C132 90 140 84 150 80Z M150 72 C162 72 172 82 176 98 C168 90 160 84 150 80Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/>`;
+  else if(st2==="adelante") s+=`<path d="M124 90 C126 70 140 64 150 64 C162 64 176 70 176 90 C168 82 160 84 150 82 C140 84 132 82 124 90Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/>`;
+  if(T==="rizado") [[124,90],[128,77],[138,68],[150,64],[162,68],[172,77],[176,90]].forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="${HAIR}"${HC}/>`);
+  else if(T==="ondulado" && st2!=="librito") s+=`<path d="M134 72 q4 -4 8 0 q4 4 8 0 q4 -4 8 0" fill="none" stroke="${WHITE}" stroke-width="1.4" stroke-linecap="round"/>`;
+  return s;
+}
+function mFace(){
+  const f=X.face, H=HAIR;
+  if(f==="barba") return `<path d="M122 102 C122 128 136 140 150 140 C164 140 178 128 178 102 C176 114 168 124 150 124 C132 124 124 114 122 102Z" fill="${H}"${HC}/><path d="M140 112 Q150 107 160 112 Q150 110 140 112Z" fill="${H}" stroke="${H}" stroke-width="3" stroke-linejoin="round"/>`;
+  if(f==="bigote") return `<path d="M139 112 Q150 106 161 112 Q150 110 139 112Z" fill="${H}" stroke="${H}" stroke-width="3.5" stroke-linejoin="round"/>`;
+  if(f==="perilla") return `<ellipse cx="150" cy="128" rx="7" ry="5" fill="${H}"${HC}/>`;
+  if(f==="patillas") return `<path d="M121 94 L127 94 L127 114 L122 112 Z M179 94 L173 94 L173 114 L178 112 Z" fill="${H}"/>`;
+  if(f==="candado") return `<path d="M141 113 Q137 121 142 127 Q150 134 158 127 Q163 121 159 113" fill="none" stroke="${H}" stroke-width="4.5" stroke-linecap="round"/><path d="M139 112 Q150 106 161 112 Q150 110 139 112Z" fill="${H}" stroke="${H}" stroke-width="3" stroke-linejoin="round"/>`;
+  return "";
+}
+function mHats(){
+  let s="";
+  if(X.acc.includes("gorro")) s+=`<path d="M119 94 C113 44 187 44 181 94 Z" fill="${WHITE}" ${S}/><rect x="118" y="84" width="64" height="12" rx="5" fill="${WHITE}" ${S}/>${[128,138,148,158,168].map(x=>`<path d="M${x} 86 v8" stroke="${LINE}" stroke-width="1.3"/>`).join("")}`;
+  else if(X.acc.includes("gorra")) s+=`<path d="M119 88 C113 44 187 44 181 88 Z" fill="${WHITE}" ${S}/><path d="M150 56 L150 88" stroke="${LINE}" stroke-width="1.4"/><circle cx="150" cy="56" r="2.4" fill="${WHITE}" ${S}/><path d="M116 88 Q150 82 184 88 Q190 96 176 97 Q150 91 124 97 Q110 96 116 88Z" fill="${WHITE}" ${S}/>`;
+  return s;
+}
+
+/* ---------- Cuerpo ---------- */
+const armL=`M112 150 C100 170 96 205 98 238 L114 238 C114 205 118 178 124 162 Z`;
+const armR=`M188 150 C200 170 204 205 202 238 L186 238 C186 205 182 178 176 162 Z`;
+function hands(){return `<circle cx="105" cy="246" r="10" fill="${WHITE}" ${S}/><circle cx="195" cy="246" r="10" fill="${WHITE}" ${S}/>`;}
+function colors(){const c=st.color;return {top:(c==="top"||c==="both")?MASS:WHITE, bottom:(c==="bottom"||c==="both")?MASS:(c==="top"?ALT:WHITE)};}
+const stripe=c=>c===WHITE?LINE:WHITE;
+function bottomSVG(c){
+  const b=X.bottom, k=stripe(c);
+  if(b==="skinny") return `<path d="M114 240 L186 240 L182 392 L156 392 L150 290 L144 392 L118 392 Z" fill="${c}" ${S}/>`;
+  if(b==="falda") return `<path d="M127 318 L127 392 L143 392 L143 318 Z M157 318 L157 392 L173 392 L173 318 Z" fill="${WHITE}" ${S}/><path d="M114 238 L186 238 L202 324 Q150 334 98 324 Z" fill="${c}" ${S}/>`;
+  if(b==="oversizep") return `<path d="M108 240 L192 240 L202 394 L154 394 L150 298 L146 394 L98 394 Z" fill="${c}" ${S}/><path d="M124 300 L120 392 M176 300 L180 392" fill="none" stroke="${k}" stroke-width="1.2" opacity=".4"/>`;
+  if(b==="sport") return `<path d="M112 240 L188 240 L186 382 L156 382 L150 292 L144 382 L114 382 Z" fill="${c}" ${S}/>
+    <rect x="113" y="378" width="32" height="13" rx="5" fill="${c}" ${S}/><rect x="155" y="378" width="32" height="13" rx="5" fill="${c}" ${S}/>
+    <path d="M116 250 L117 374 M184 250 L183 374" fill="none" stroke="${k}" stroke-width="2.2" stroke-linecap="round"/><rect x="112" y="240" width="76" height="9" rx="3" fill="${c}" ${S}/>`;
+  return `<path d="M110 240 L190 240 L191 394 L154 394 L150 296 L146 394 L109 394 Z" fill="${c}" ${S}/><path d="M128 262 L127 392 M172 262 L173 392" fill="none" stroke="${k}" stroke-width="1.3" opacity=".55"/><line x1="110" y1="248" x2="190" y2="248" ${S}/>`;
+}
+function shoesSVG(){
+  const s=X.shoes, b=X.bottom, lx=b==="oversizep"?122:(b==="falda"||b==="skinny"||b==="sport"?131:128), rx=300-lx;
+  if(s==="tacones"){const heel=(x,m)=>{const tip=x-24*m, back=x+16*m;return `<path d="M${back} 392 L${x-10*m} 392 L${tip} 404 L${back} 404 Z" fill="${WHITE}" ${S}/><path d="M${back-3*m} 404 L${back-2*m} 416" stroke="${LINE}" stroke-width="3.5" stroke-linecap="round"/>`;};return heel(lx,1)+heel(rx,-1);}
+  const one=x=>{
+    if(s==="tenis") return `<path d="M${x-20} 390 h40 q4 0 4 6 v8 q0 8 -8 8 h-32 q-8 0 -8 -8 v-8 q0 -6 4 -6 Z" fill="${WHITE}" ${S}/><rect x="${x-24}" y="404" width="48" height="9" rx="4" fill="${LINE}"/><path d="M${x-8} 394 l6 4 M${x} 393 l6 4" ${S}/>`;
+    if(s==="casuales") return male()? `<path d="M${x-20} 394 h40 q6 0 6 8 v4 q0 6 -6 6 h-40 q-6 0 -6 -6 v-4 q0 -8 6 -8 Z" fill="${WHITE}" ${S}/><path d="M${x-24} 406 h48" ${S}/>`
+                                       : `<path d="M${x-20} 396 h40 q6 0 6 8 q0 6 -6 6 h-40 q-6 0 -6 -6 q0 -8 6 -8 Z" fill="${WHITE}" ${S}/><path d="M${x-12} 400 h24" ${S}/>`;
+    return `<path d="M${x-20} 392 h40 q8 0 8 10 q0 8 -8 8 h-40 q-6 0 -6 -8 q0 -10 6 -10 Z" fill="${LINE}" ${S}/><path d="M${x-10} 396 h20" stroke="${WHITE}" stroke-width="1.6" stroke-linecap="round"/>`;
+  };
+  return one(lx)+one(rx);
+}
+const sleevesLong=(c)=>`<path d="M108 150 C96 170 92 206 94 234 L118 234 C118 200 122 176 128 162 Z" fill="${c}" ${S}/><path d="M192 150 C204 170 208 206 206 234 L182 234 C182 200 178 176 172 162 Z" fill="${c}" ${S}/>`;
+const sleevesShort=(c,wide)=>`<path d="${armL}" fill="${WHITE}" ${S}/><path d="${armR}" fill="${WHITE}" ${S}/>`+(wide?
+  `<path d="M108 150 C96 162 90 178 88 196 L120 200 C120 186 122 172 126 160 Z" fill="${c}" ${S}/><path d="M192 150 C204 162 210 178 212 196 L180 200 C180 186 178 172 174 160 Z" fill="${c}" ${S}/>`:
+  `<path d="M112 150 C104 160 101 168 100 180 L121 182 C121 172 122 166 124 160 Z" fill="${c}" ${S}/><path d="M188 150 C196 160 199 168 200 180 L179 182 C179 172 178 166 176 160 Z" fill="${c}" ${S}/>`);
+function topSVG(c){
+  const t=X.top, on=c===WHITE?LINE:WHITE;
+  if(t==="oversize") return sleevesShort(c,true)+`<path d="M106 148 Q110 138 130 136 L170 136 Q190 138 194 148 L198 264 L102 264 Z" fill="${c}" ${S}/><path d="M136 137 Q150 152 164 137" fill="none" ${S}/>`;
+  if(t==="franela") return sleevesShort(c,false)+`<path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 250 L110 250 Z" fill="${c}" ${S}/><path d="M138 138 Q150 150 162 138" fill="none" ${S}/>`;
+  if(t==="polo") return sleevesShort(c,false)+`<path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 250 L110 250 Z" fill="${c}" ${S}/>
+    <path d="M140 136 L150 148 L134 148 Z M160 136 L150 148 L166 148 Z" fill="${c}" ${S}/><path d="M150 148 L150 172" stroke="${on}" stroke-width="1.6"/><circle cx="150" cy="156" r="1.8" fill="${on}"/><circle cx="150" cy="166" r="1.8" fill="${on}"/>`;
+  if(t==="blusa") return `
+    <path d="M112 148 C98 166 94 204 96 232 L116 232 C116 200 120 176 126 160 Z" fill="${c}" ${S}/><path d="M188 148 C202 166 206 204 204 232 L184 232 C184 200 180 176 174 160 Z" fill="${c}" ${S}/>
+    <rect x="94" y="226" width="24" height="10" rx="4" fill="${c}" ${S}/><rect x="182" y="226" width="24" height="10" rx="4" fill="${c}" ${S}/>
+    <path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 246 L110 246 Z" fill="${c}" ${S}/>
+    <path d="M142 140 Q150 148 158 140" fill="none" ${S}/><path d="M150 148 L140 142 L140 154 Z M150 148 L160 142 L160 154 Z" fill="${c}" ${S}/>
+    ${[166,182,198,214].map(y=>`<circle cx="150" cy="${y}" r="2" fill="${on}"/>`).join("")}`;
+  if(t==="blazer") return sleevesLong(c)+`
+    <path d="M108 150 Q112 138 130 136 L170 136 Q188 138 192 150 L196 266 L104 266 Z" fill="${c}" ${S}/>
+    <path d="M136 137 L150 186 L164 137 Z" fill="${WHITE}" ${S}/>
+    <path d="M136 137 L130 158 L142 166 L150 186 Z M164 137 L170 158 L158 166 L150 186 Z" fill="${c}" ${S}/>
+    <circle cx="150" cy="204" r="2.6" fill="${on}"/><circle cx="150" cy="222" r="2.6" fill="${on}"/><path d="M116 236 h18 M166 236 h18" ${S}/>`;
+  if(t==="jacket") return sleevesLong(c)+`
+    <rect x="93" y="228" width="26" height="9" rx="4" fill="${c}" ${S}/><rect x="181" y="228" width="26" height="9" rx="4" fill="${c}" ${S}/>
+    <path d="M108 150 Q112 138 130 136 L170 136 Q188 138 192 150 L194 254 L106 254 Z" fill="${c}" ${S}/>
+    <path d="M140 137 L160 137 L158 254 L142 254 Z" fill="${WHITE}" ${S}/><path d="M142 140 Q150 148 158 140" fill="none" ${S}/>
+    <path d="M130 135 L141 138 L137 154 Z M170 135 L159 138 L163 154 Z" fill="${c}" ${S}/>
+    <rect x="105" y="248" width="90" height="10" rx="4" fill="${c}" ${S}/><path d="M118 210 l12 -4 M182 210 l-12 -4" stroke="${on}" stroke-width="1.6" stroke-linecap="round"/>`;
+  if(t==="chaleco") return `
+    <path d="M112 148 C98 166 94 204 96 232 L116 232 C116 200 120 176 126 160 Z" fill="${WHITE}" ${S}/><path d="M188 148 C202 166 206 204 204 232 L184 232 C184 200 180 176 174 160 Z" fill="${WHITE}" ${S}/>
+    <rect x="94" y="226" width="24" height="10" rx="4" fill="${WHITE}" ${S}/><rect x="182" y="226" width="24" height="10" rx="4" fill="${WHITE}" ${S}/>
+    <path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 250 L110 250 Z" fill="${WHITE}" ${S}/>
+    <path d="M140 136 L150 148 L136 150 Z M160 136 L150 148 L164 150 Z" fill="${WHITE}" ${S}/>
+    <path d="M118 152 Q122 142 136 140 L150 184 L164 140 Q178 142 182 152 L186 252 L114 252 Z" fill="${c}" ${S}/>
+    <rect x="113" y="244" width="74" height="10" rx="3" fill="${c}" ${S}/>`;
+  return `
+    <path d="M108 152 C94 176 90 210 92 236 L116 236 C116 206 120 180 126 164 Z" fill="${c}" ${S}/><path d="M192 152 C206 176 210 210 208 236 L184 236 C184 206 180 180 174 164 Z" fill="${c}" ${S}/>
+    <rect x="91" y="230" width="26" height="10" rx="4" fill="${c}" ${S}/><rect x="183" y="230" width="26" height="10" rx="4" fill="${c}" ${S}/>
+    <path d="M106 152 Q110 138 130 136 L170 136 Q190 138 194 152 L198 262 L102 262 Z" fill="${c}" ${S}/><rect x="104" y="252" width="92" height="12" rx="5" fill="${c}" ${S}/>
+    <path d="M122 142 Q150 166 178 142 Q174 124 150 124 Q126 124 122 142 Z" fill="${c}" ${S}/>
+    <path d="M144 150 L142 176 M156 150 L158 176" fill="none" stroke="${on}" stroke-width="2.2" stroke-linecap="round"/><path d="M126 222 L174 222 L180 248 L120 248 Z" fill="none" stroke="${on}" stroke-width="2"/>`;
+}
+function head(){return `
+ <ellipse cx="121" cy="104" rx="6" ry="8" fill="${WHITE}" ${S}/><ellipse cx="179" cy="104" rx="6" ry="8" fill="${WHITE}" ${S}/>
+ <ellipse cx="150" cy="100" rx="28" ry="32" fill="${WHITE}" ${S}/>
+ <path d="M133 92 Q139 88 145 91 M155 91 Q161 88 167 92" fill="none" stroke="${LINE}" stroke-width="4" stroke-linecap="round"/>
+ <circle cx="139" cy="103" r="2.6" fill="${LINE}"/><circle cx="161" cy="103" r="2.6" fill="${LINE}"/>
+ <path d="M141 116 Q150 123 159 116" fill="none" ${S}/>`;}
+const F=k=>accentIsAcc(k)?ACC:WHITE;
+const has=k=>X.acc.includes(k);
+function accBody(){
+  let s="";
+  if(has("carnet")) s+=`<path d="M140 140 L147 198 M160 140 L153 198" fill="none" stroke="${LINE}" stroke-width="1.6"/><rect x="141" y="196" width="18" height="22" rx="2" fill="${WHITE}" ${S}/><path d="M145 206 h10" stroke="${LINE}" stroke-width="1.6"/>`;
+  if(has("tatuajes") && ["franela","polo","oversize"].includes(X.top)) s+=`<path d="M104 200 l4 6 l4 -6 M103 212 q5 4 10 0 M106 220 l4 -3" fill="none" stroke="${LINE}" stroke-width="1.5" stroke-linecap="round"/>`;
+  return s;
+}
+function accNeck(){
+  let s="";
+  if(has("collar")) s+=`<path d="M136 140 Q150 160 164 140" fill="none" stroke="${LINE}" stroke-width="1.6"/><circle cx="150" cy="153" r="4" fill="${F("collar")}" ${S}/>`;
+  if(has("panoleta")) s+=`<path d="M133 138 Q150 150 167 138 L163 146 Q150 154 137 146 Z" fill="${F("panoleta")}" ${S}/><path d="M150 148 L140 170 L152 165 Z" fill="${F("panoleta")}" ${S}/><circle cx="150" cy="149" r="4" fill="${F("panoleta")}" ${S}/>`;
+  if(has("audifonos")) s+=`<path d="M126 142 Q150 168 174 142" fill="none" stroke="${LINE}" stroke-width="5" stroke-linecap="round"/><ellipse cx="124" cy="140" rx="11" ry="13" fill="${WHITE}" ${S}/><ellipse cx="124" cy="140" rx="5" ry="7" fill="${LINE}"/><ellipse cx="176" cy="140" rx="11" ry="13" fill="${WHITE}" ${S}/><ellipse cx="176" cy="140" rx="5" ry="7" fill="${LINE}"/>`;
+  return s;
+}
+function accHead(){
+  if(male()) return mHats();
+  if(!has("cintillo")) return "";
+  const d="M122 96 C120 70 134 63 150 63 C166 63 180 70 178 96";
+  return `<path d="${d}" fill="none" stroke="${LINE}" stroke-width="8" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${F("cintillo")}" stroke-width="4" stroke-linecap="round"/>`;
+}
+function accFace(){
+  let s="";
+  if(has("aretes")){ if(male()) s+=`<circle cx="121" cy="113" r="2.6" fill="${F("aretes")}" ${S}/>`;
+    else {const f=accentIsAcc("aretes")?ACC:"none";s+=`<circle cx="121" cy="116" r="4.5" fill="${f}" ${S}/><circle cx="179" cy="116" r="4.5" fill="${f}" ${S}/>`;}}
+  if(has("piercing")) s+=`<circle cx="166" cy="87" r="2.6" fill="${accentIsAcc("piercing")?ACC:"none"}" stroke="${LINE}" stroke-width="1.6"/>`;
+  if(has("lentes")) s+= male()? `<rect x="129" y="96" width="19" height="14" rx="4" fill="none" ${S}/><rect x="152" y="96" width="19" height="14" rx="4" fill="none" ${S}/><path d="M148 102 L152 102 M129 101 L123 98 M171 101 L177 98" fill="none" ${S}/>`
+                              : `<circle cx="139" cy="103" r="9.5" fill="none" ${S}/><circle cx="161" cy="103" r="9.5" fill="none" ${S}/><path d="M148.5 102 Q150 100 151.5 102 M129.5 101 L123 98 M170.5 101 L177 98" fill="none" ${S}/>`;
+  return s;
+}
+function accHands(){
+  let s="";
+  if(has("reloj")) s+=`<rect x="96" y="229" width="19" height="8" rx="2" fill="${LINE}"/><circle cx="105.5" cy="233" r="4.6" fill="${F("reloj")}" ${S}/>`;
+  if(has("pulseras")) s+=`<rect x="95" y="228" width="21" height="4" rx="2" fill="${F("pulseras")}" ${S}/><rect x="95" y="234" width="21" height="3" rx="1.5" fill="${WHITE}" stroke="${LINE}" stroke-width="1.6"/>`;
+  if(has("anillos")) s+=`<circle cx="101" cy="252" r="2.4" fill="none" stroke="${LINE}" stroke-width="1.8"/><circle cx="199" cy="252" r="2.4" fill="none" stroke="${LINE}" stroke-width="1.8"/>`;
+  return s;
+}
+function propSVG(){
+  const p=st.prop, x=195, y=246, A=ACC||WHITE, propAcc=!!ACC&&!firstAccent();
+  const a=propAcc?A:WHITE, l=(d,w)=>`<path d="${d}" fill="none" stroke="${LINE}" stroke-width="${w||1.6}" stroke-linecap="round"/>`;
+  switch(p){
+   case "factura": return `<path d="M${x-12} ${y-52} h26 v40 l-4 4 l-4 -4 l-4 4 l-4 -4 l-4 4 l-4 -4 l-2 2 Z" fill="${WHITE}" ${S}/>${[0,1,2].map(i=>l(`M${x-7} ${y-44+i*7} h14`)).join("")}${l(`M${x-7} ${y-21} h16`,2.6)}<circle cx="${x+8}" cy="${y-44}" r="3" fill="${a}" stroke="${LINE}" stroke-width="1.2"/>`;
+   case "recibo": {const d=`M${x-6} ${y-14} C${x+16} ${y-10} ${x+20} ${y+30} ${x} ${y+40} C${x-16} ${y+50} ${x+10} ${y+80} ${x+24} ${y+120}`;return `<path d="${d}" fill="none" stroke="${LINE}" stroke-width="12" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${WHITE}" stroke-width="8" stroke-linecap="round"/><circle cx="${x+2}" cy="${y-12}" r="3" fill="${a}" stroke="${LINE}" stroke-width="1.2"/>`;}
+   case "calculadora": return `<rect x="${x-13}" y="${y-44}" width="26" height="34" rx="4" fill="${WHITE}" ${S}/><rect x="${x-8}" y="${y-39}" width="16" height="7" rx="1.5" fill="${a}" stroke="${LINE}" stroke-width="1.2"/>${[0,1,2].map(r=>[0,1,2].map(c=>`<circle cx="${x-6+c*6}" cy="${y-26+r*6}" r="1.6" fill="${LINE}"/>`).join("")).join("")}`;
+   case "tablet": return `<rect x="${x-16}" y="${y-50}" width="32" height="44" rx="5" fill="${WHITE}" ${S}/><rect x="${x-11}" y="${y-44}" width="22" height="30" rx="2" fill="${propAcc?A:"none"}" stroke="${LINE}" stroke-width="1.4"/>`;
+   case "tabletcheck": return `<rect x="${x-16}" y="${y-50}" width="32" height="44" rx="5" fill="${WHITE}" ${S}/>${[0,1,2].map(i=>`<path d="M${x-10} ${y-40+i*10} l3 3 l5 -6" fill="none" stroke="${LINE}" stroke-width="1.8" stroke-linecap="round"/><path d="M${x+1} ${y-38+i*10} h8" stroke="${LINE}" stroke-width="1.4" stroke-linecap="round"/>`).join("")}`;
+   case "maletin": return `<rect x="${x-16}" y="${y+6}" width="32" height="24" rx="4" fill="${WHITE}" ${S}/><path d="M${x-6} ${y+6} v-5 h12 v5" fill="none" ${S}/><path d="M${x-8} ${y+22} l5 -6 l3 3 l5 -6" fill="none" stroke="${propAcc?A:LINE}" stroke-width="2" stroke-linecap="round"/>`;
+   case "llave": return `<path d="M${x} ${y-8} L${x-28} ${y-70}" stroke="${LINE}" stroke-width="10" stroke-linecap="round"/><path d="M${x} ${y-8} L${x-28} ${y-70}" stroke="${WHITE}" stroke-width="6" stroke-linecap="round"/><circle cx="${x-30}" cy="${y-74}" r="9" fill="${a}" ${S}/><rect x="${x-34}" y="${y-84}" width="8" height="10" fill="${WHITE}"/>`;
+   case "portapapeles": return `<rect x="${x-15}" y="${y-50}" width="30" height="42" rx="3" fill="${WHITE}" ${S}/><rect x="${x-7}" y="${y-54}" width="14" height="8" rx="2" fill="${LINE}"/>${[0,1,2].map(i=>l(`M${x-8} ${y-38+i*8} h16`,1.4)).join("")}<rect x="${x+9}" y="${y-58}" width="4" height="22" rx="1" fill="${a}" stroke="${LINE}" stroke-width="1"/>`;
+   case "laptop": return `<rect x="84" y="196" width="44" height="9" rx="3" transform="rotate(-8 106 200)" fill="${WHITE}" ${S}/><circle cx="106" cy="200" r="2" fill="${a}"/>`;
+   case "laptopab": return `<path d="M${x-30} ${y-6} L${x+6} ${y-6} L${x+6} ${y-2} L${x-30} ${y-2} Z" fill="${WHITE}" ${S}/><path d="M${x-28} ${y-6} L${x-22} ${y-40} L${x+8} ${y-40} L${x+2} ${y-6} Z" fill="${WHITE}" ${S}/><circle cx="${x-10}" cy="${y-23}" r="3" fill="${a}" stroke="${LINE}" stroke-width="1"/>`;
+   case "taza": return `<path d="M${x-10} ${y-30} h20 v16 q0 8 -8 8 h-4 q-8 0 -8 -8 Z" fill="${a}" ${S}/><path d="M${x+10} ${y-26} q8 0 8 6 q0 6 -8 6" fill="none" ${S}/>${l(`M${x-2} ${y-36} q-4 -5 0 -10`)}`;
+   case "celular": return `<rect x="${x-8}" y="${y-38}" width="16" height="30" rx="4" fill="${WHITE}" ${S}/><rect x="${x-5}" y="${y-34}" width="10" height="20" rx="1.5" fill="${propAcc?A:"none"}" stroke="${LINE}" stroke-width="1"/>`;
+   case "portafolio": return `<rect x="${x-14}" y="${y-46}" width="28" height="38" rx="3" fill="${MASS}" ${S}/><rect x="${x-4}" y="${y-30}" width="8" height="6" rx="1.5" fill="${a}" stroke="${LINE}" stroke-width="1"/>`;
+   case "carpeta": return `<path d="M${x-15} ${y-46} h12 l3 4 h15 v34 h-30 Z" fill="${WHITE}" ${S}/><rect x="${x-14}" y="${y-49}" width="10" height="4" rx="1" fill="${a}" stroke="${LINE}" stroke-width="1"/>`;
+  }
+  return "";
+}
+function charSVG(){
+  setPal(); X=st[st.sex];
+  const c=colors(), M=male();
+  let g = M? mHairBack() : fHairBack();
+  g+=`<rect x="141" y="122" width="18" height="24" fill="${WHITE}" ${S}/>`;
+  g+=bottomSVG(c.bottom)+shoesSVG()+topSVG(c.top)+accBody()+hands();
+  g+=head();
+  if(M) g+=mFace();
+  g+=accNeck();
+  g+= M? mHairCap() : fHairCap();
+  g+=accHead();
+  g+= M? mHairSides() : fHairSides();
+  g+=accFace()+accHands();
+  if(st.prop!=="none") g+=propSVG()+`<circle cx="195" cy="246" r="10" fill="${WHITE}" ${S}/>`;
+  return g;
+}
+
+/* ---------- Prompt ---------- */
+function fHairText(){
+  const L=find("len",X.len).en, T=find("type",X.type).en, b=find("bangs",X.bangs).en, bs={corto:"small",medio:"round",largo:"big"}[X.len];
+  const h={recogido:`${L} ${T} hair gathered into a ${bs} bun`,dosmonos:`${L} ${T} hair styled in two ${bs} space buns`,doscolas:`${L} ${T} hair tied in two pigtails`,
+    unacola:`${L} ${T} hair tied in a high ponytail`,mediacola:`${L} ${T} hair worn in a half-up half-down style with a small ponytail on top`}[X.style]||`${L} ${T} loose hair`;
+  return b?`${h} and ${b}`:h;
+}
+function mHairText(){
+  const T=find("type",X.type).en, Ln=X.len;
+  if(Ln==="rapado") return "a clean buzz cut";
+  const L = Ln==="largo"?"long":"short";
+  const ph={lado:`${L} ${T} hair swept to one side`,mullet:`a ${T} mullet, short on top and ${Ln==="largo"?"long":"medium-length"} at the back`,
+    librito:`${L} ${T} middle-parted curtain hair`,atras:`${L} ${T} slicked-back hair`,cola:`${L} ${T} hair tied back into a small man bun`,
+    mediacola:`${L} ${T} hair in a half-up man bun with the rest loose`,adelante:`${L} ${T} hair brushed forward into a short fringe`}[X.style];
+  const fd = Ln==="fadealto"?"high":(Ln==="fadebajo"?"low":null);
+  if(fd && X.style==="mullet") return `a ${T} mullet haircut with a ${fd} fade on the sides, short on top and medium-length at the back of the neck`;
+  if(fd) return `a ${fd} fade on the sides with ${ph} on top`;
+  return ph;
+}
+function buildPrompt(){
+  X=st[st.sex];
+  const C=co(), M=male(), pr=M?"his":"her", top=find("top",X.top), bot=find("bottom",X.bottom), sh=find("shoes",X.shoes);
+  const dept=(C.depts.find(d=>d[0]===st.dept)||C.depts[0])[2], pose=POSES.find(p=>p.id===st.pose)||POSES[0], prop=PROPS[st.prop]||PROPS.none;
+  const pen=pose.en.replace(/\{pr\}/g,pr), propEn=prop.en.replace(/\{pr\}/g,pr);
+  const acc=O().acc.filter(a=>X.acc.includes(a.id)).map(a=>a.en);
+  const faceBits=["thick expressive eyebrows","simple dot eyes","a friendly confident smile"];
+  if(M){const f=find("face",X.face); faceBits.splice(0,0,f.id==="sin"?"clean-shaven":`${f.en} as a solid mass`);}
+  const face=faceBits.concat(acc).join(", ");
+  let action;
+  if(propEn){
+    action = st.pose==="brazos" ? `${pen}, ${propEn} close to ${pr} chest` :
+             st.pose==="camina" ? `${pen}, ${propEn}` :
+             st.pose==="saluda" ? `${pen}, one hand raised in a friendly wave, the other hand ${propEn}` : `${pen}, the other hand ${propEn}`;
+  } else {
+    action = st.pose==="saluda" ? `${pen}, one hand raised in a friendly wave` : st.pose==="brazos" ? `${pen}, arms crossed` :
+             st.pose==="cadera" ? `${pen}, the other hand raised in a friendly wave` : pen;
+  }
+  const items = st.color==="both" ? `${top.cName} and ${bot.cName}` : (st.color==="top"?top.cName:bot.cName);
+  const accItem=accentItem();
+  const hairWho = M ? "hair and facial hair" : "hair";
+  let colorRule;
+  if(C.id==="paguetodo"){
+    const rest = st.color==="top" ? `; the ${bot.word} in deep navy #0b1633` : "";
+    colorRule = `COLOR RULE: royal blue #0858ea is used ONLY on ${items}; everything else white with thin navy outlines${rest}; ${hairWho} in deep navy #0b1633; ${accItem?`one tiny yellow #ebca0a accent only on ${accItem}`:"no yellow"}.`;
+  } else if(C.id==="sirvalor"){
+    const rest = st.color==="top" ? `, the ${bot.word} in solid deep navy #1a2837` : "";
+    colorRule = `Palette: solid masses in burgundy #792e24 only on ${items}${rest}; outlines and ${hairWho} in deep navy #1a2837; everything else white; no accent color.`;
+  } else {
+    colorRule = `Palette: solid masses in deep teal #155c5c only on the ${hairWho} and ${items}, outlines in very dark teal #0d3333, everything else white; ${accItem?`one tiny accent in emerald green #2daf84 only on ${accItem}`:"no accent color"}.`;
+  }
+  const hairFill = C.id==="ebcorp" ? "rendered as one solid filled shape" : "rendered as one solid deep navy shape";
+  const who = M ? "A warm, confident young man" : "A warm, confident young woman";
+  const hairTxt = M ? mHairText() : fHairText();
+  const wear = (M?"He":"She")+` wears ${top.en}, ${bot.en}, ${sh.en}`;
+  return `Bold graphic flat vector character illustration, single character representing the ${dept} department of ${C.firm}, ${M?"male":"female"} version, same illustration series as the reference images. ${who} with ${hairTxt} ${hairFill}, ${face}. ${wear}. ${action}. Hands drawn clearly with exactly five fingers each (four fingers and a thumb). ${colorRule} Style must match the references exactly: clean thin uniform-weight outlines with no wobble, large flat solid masses, pure white fills elsewhere, no gradients, no grey shading, no sketchy strokes, strong readable silhouette, chunky simplified hands, subtle paper grain texture. Plain off-white background, generous negative space, character centered, even flat studio lighting, no floating cards or icons, no text, no logos.`;
+}
+
+/* ---------- UI ---------- */
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function renderCompanies(){
+  document.getElementById("coOpts").innerHTML=COMPANIES.map(c=>`<button type="button" class="cobtn" id="co-${c.id}" data-co="${c.id}" aria-pressed="false">
+    <b>${c.name}</b><small>${c.desc}</small><span class="sw"><i style="background:${c.mass}"></i><i style="background:${c.line}"></i>${c.accent?`<i style="background:${c.accent}"></i>`:""}</span></button>`).join("");
+}
+function rowHTML(g,label,hint){
+  const multi=g==="acc";
+  return `<div class="row"><div class="rowhead">${label}${hint?` <em>${hint}</em>`:""}</div><div class="chips">${O()[g].map(o=>`<button type="button" class="chip${multi?" multi":""}" id="${st.sex}-${g}-${o.id}" data-g="${g}" data-v="${o.id}" aria-pressed="false">${multi?'<span class="ck"></span>':""}${o.name}</button>`).join("")}</div></div>`;
+}
+function renderRows(){
+  const R=ROWS[st.sex];
+  document.getElementById("hairRows").innerHTML=R.hair.map(r=>rowHTML(r[0],r[1],r[2])).join("");
+  document.getElementById("outRows").innerHTML=R.out.map(r=>rowHTML(r[0],r[1],r[2])).join("");
+  document.getElementById("accRows").innerHTML=rowHTML("acc","Combina los que quieras");
+  document.getElementById("s-cab").textContent = male()?"Cabello y rostro":"Cabello";
+}
+function renderCompanyLists(){
+  const C=co();
+  document.getElementById("dept").innerHTML=C.depts.map(d=>`<option value="${d[0]}">${d[1]}</option>`).join("");
+  document.getElementById("prop").innerHTML=["none"].concat(C.props).map(id=>`<option value="${id}">${PROPS[id].name}</option>`).join("");
+  document.getElementById("pose").innerHTML=POSES.map(o=>`<option value="${o.id}">${o.name}</option>`).join("");
+}
+function render(){
+  X=st[st.sex];
+  const C=co();
+  document.getElementById("preview").innerHTML=charSVG();
+  document.querySelectorAll("[data-co]").forEach(b=>b.setAttribute("aria-pressed", st.company===b.dataset.co));
+  document.querySelectorAll("[data-sex]").forEach(b=>b.setAttribute("aria-pressed", st.sex===b.dataset.sex));
+  document.querySelectorAll("[data-g]").forEach(b=>{const g=b.dataset.g,v=b.dataset.v;b.setAttribute("aria-pressed", g==="acc"? X.acc.includes(v) : X[g]===v);});
+  const styleDisabled = male() && X.len==="rapado";
+  document.querySelectorAll('[data-g="style"]').forEach(b=>b.disabled=styleDisabled);
+  document.querySelectorAll("[data-color]").forEach(b=>b.setAttribute("aria-pressed", st.color===b.dataset.color));
+  ["dept","pose","prop"].forEach(k=>{document.getElementById(k).value=st[k];});
+  const top=find("top",X.top), bot=find("bottom",X.bottom);
+  const what = st.color==="both"?`${top.name.toLowerCase()} y ${bot.name.toLowerCase()}`:(st.color==="top"?top.name.toLowerCase():bot.name.toLowerCase());
+  document.getElementById("lgMassDot").style.background=C.mass; document.getElementById("lgMass").textContent=`${cap(C.massName)}: ${what}`;
+  document.getElementById("lgHairDot").style.background=C.hair; document.getElementById("lgHair").textContent=`${cap(C.hairName)}: cabello${male()&&X.face!=="sin"?" y barba":""}`;
+  const accLg=document.getElementById("lgAccDot").parentNode, ai=firstAccent();
+  const orderNames=O().accOrder.map(k=>find("acc",k).name.toLowerCase());
+  if(C.accent){accLg.hidden=false;document.getElementById("lgAccDot").style.background=C.accent;
+    document.getElementById("lgAcc").textContent=`${cap(C.accentName)}: `+(ai?find("acc",ai).name.toLowerCase():(st.prop!=="none"?PROPS[st.prop].name.toLowerCase():"sin acento"));
+    document.getElementById("noteDot").style.background=C.accent;
+    document.getElementById("noteTxt").textContent=`El ${C.accentName} es un acento único. Va en ${orderNames.join(", ")}, en ese orden; si no llevas ninguno, va en un detalle del objeto en la mano.`;}
+  else {accLg.hidden=true;document.getElementById("noteDot").style.background=C.line;
+    document.getElementById("noteTxt").textContent="Sirvalor no usa color de acento: sus personajes trabajan solo con vinotinto, azul marino y blanco.";}
+  document.getElementById("colorHint").textContent={paguetodo:"en Paguetodo, una sola prenda",ebcorp:"en e-bCORP, normalmente ambas",sirvalor:"en Sirvalor, la prenda superior; el pantalón va en azul marino"}[C.id];
+  document.getElementById("tagline").textContent=`${C.name} · ${(C.depts.find(d=>d[0]===st.dept)||C.depts[0])[1]} · ${male()?"masculino":"femenino"}`;
+  document.getElementById("srcCo").textContent=`Estilo base: serie de personajes por departamento de ${C.name}`;
+  document.getElementById("prompt").textContent=buildPrompt();
+  save(); paintConfirm();
+}
+function autoColor(){const C=co(); st.color = C.defColor==="both" ? "both" : find("top",st[st.sex].top).auto;}
+function setCompany(id){
+  const C=COMPANIES.find(c=>c.id===id); if(!C) return;
+  st.company=id;
+  if(!C.depts.some(d=>d[0]===st.dept)) st.dept=C.depts[0][0];
+  if(st.prop!=="none" && !C.props.includes(st.prop)) st.prop=C.props[0];
+  if(id!=="paguetodo") ["f","m"].forEach(s=>{if(!st[s].acc.includes("carnet")) st[s].acc.push("carnet");});
+  X=st[st.sex]; autoColor(); renderCompanyLists(); render();
+}
+function setSex(s){st.sex=s; X=st[s]; autoColor(); renderRows(); render();}
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-co]"); if(c){setCompany(c.dataset.co);return;}
+  const sx=e.target.closest("[data-sex]"); if(sx){setSex(sx.dataset.sex);return;}
+  const b=e.target.closest("[data-g]");
+  if(b){const g=b.dataset.g,v=b.dataset.v;
+    if(g==="acc"){X.acc=X.acc.includes(v)?X.acc.filter(x=>x!==v):[...X.acc,v];
+      if(v==="gorra"&&X.acc.includes("gorra")) X.acc=X.acc.filter(x=>x!=="gorro");
+      if(v==="gorro"&&X.acc.includes("gorro")) X.acc=X.acc.filter(x=>x!=="gorra");}
+    else { X[g]=v; if(g==="top" && co().defColor!=="both") st.color=find("top",v).auto; }
+    render(); return;}
+  const cl=e.target.closest("[data-color]"); if(cl){st.color=cl.dataset.color;render();}
+});
+["dept","pose","prop"].forEach(k=>document.getElementById(k).addEventListener("change",ev=>{st[k]=ev.target.value;render();}));
+document.getElementById("reset").onclick=()=>{const sx=st.sex;st=clone(DEF);st.sex=sx;X=st[sx];renderRows();renderCompanyLists();render();};
+document.getElementById("rnd").onclick=()=>{
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  Object.keys(ROWS[st.sex].hair.concat(ROWS[st.sex].out).reduce((o,r)=>(o[r[0]]=1,o),{})).forEach(g=>X[g]=pick(O()[g]).id);
+  const C=co(); autoColor(); st.pose=pick(POSES).id; st.dept=pick(C.depts)[0]; st.prop=pick(["none"].concat(C.props));
+  X.acc=O().acc.filter(()=>Math.random()<.25).map(a=>a.id);
+  if(X.acc.includes("gorra")&&X.acc.includes("gorro")) X.acc=X.acc.filter(x=>x!=="gorro");
+  if(C.id!=="paguetodo"&&!X.acc.includes("carnet")) X.acc.push("carnet");
+  render();
+};
+const copyBtn=document.getElementById("copy");
+copyBtn.onclick=()=>{
+  const t=document.getElementById("prompt").textContent;
+  const done=()=>{copyBtn.textContent="Copiado";setTimeout(()=>copyBtn.textContent="Copiar prompt",1600);};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById("prompt"));const s=getSelection();s.removeAllRanges();s.addRange(r);copyBtn.textContent="Texto seleccionado";setTimeout(()=>copyBtn.textContent="Copiar prompt",1800);};
+  try{navigator.clipboard.writeText(t).then(done,fallback);}catch(e){fallback();}
+};
+
+/* ---------- Envío a la base de datos ---------- */
+let sentSig=null, sending=false;
+const sigOf=x=>{const sub=x[x.sex]||{};return JSON.stringify([x.sex,x.company,x.color,x.dept,x.pose,x.prop,Object.keys(sub).sort().map(k=>k==="acc"?[...sub.acc].sort():sub[k])]);};
+function paintConfirm(){
+  if(sending) return;
+  const box=document.getElementById("confirmBox"), msg=document.getElementById("confirmMsg");
+  if(sentSig&&sentSig===sigOf(st)){box.dataset.state="ok";msg.textContent="Recibimos tu personaje. El equipo de marca generará la ilustración con esta selección.";}
+  else if(sentSig){box.dataset.state="dirty";msg.textContent="Hiciste cambios después de enviar. Pulsa Generar personaje otra vez para enviar la versión nueva.";}
+  else {box.dataset.state="idle";msg.textContent="Cuando termines de combinar, escribe tu nombre y pulsa Generar personaje. Tu selección llega al equipo de marca, que generará la ilustración.";}
+}
+document.getElementById("confirmBox").addEventListener("submit",async ev=>{
+  ev.preventDefault();
+  const box=document.getElementById("confirmBox"), msg=document.getElementById("confirmMsg"), b=document.getElementById("confirmBtn");
+  const nombre=document.getElementById("nombre").value.trim();
+  if(!nombre){box.dataset.state="error";msg.textContent="Escribe tu nombre para que el equipo sepa de quién es el personaje.";document.getElementById("nombre").focus();return;}
+  X=st[st.sex]; const C=co(), nm=g=>find(g,X[g]).name;
+  const sel={}; ROWS[st.sex].hair.concat(ROWS[st.sex].out).forEach(r=>sel[r[1]]=nm(r[0]));
+  const payload={nombre, website:document.getElementById("website").value, empresa:C.name, sexo:male()?"Masculino":"Femenino",
+    departamento:(C.depts.find(d=>d[0]===st.dept)||C.depts[0])[1], seleccion:sel,
+    prendaEnColor:{top:"superior",bottom:"inferior",both:"ambas"}[st.color],
+    accesorios:O().acc.filter(a=>X.acc.includes(a.id)).map(a=>a.name),
+    pose:(POSES.find(p=>p.id===st.pose)||POSES[0]).name, objeto:(PROPS[st.prop]||PROPS.none).name,
+    prompt:buildPrompt(), state:clone(st)};
+  sending=true; b.disabled=true; box.dataset.state="idle"; msg.textContent="Enviando tu personaje…";
+  try{
+    const r=await fetch("/api/guardar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(d.error||"No se pudo guardar");
+    sentSig=sigOf(st);
+    try{localStorage.setItem("arma-personaje-nombre",nombre);}catch(e){}
+  }catch(e){sending=false;b.disabled=false;box.dataset.state="error";msg.textContent="No se pudo enviar tu personaje. Revisa tu conexión e inténtalo otra vez.";return;}
+  sending=false; b.disabled=false; paintConfirm();
+});
+try{const n=localStorage.getItem("arma-personaje-nombre"); if(n) document.getElementById("nombre").value=n;}catch(e){}
+
+renderCompanies(); renderRows(); renderCompanyLists(); render();
+</script>
+
+</body>
+</html>

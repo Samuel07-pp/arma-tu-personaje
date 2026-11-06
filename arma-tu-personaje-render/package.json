@@ -1,0 +1,9 @@
+{
+  "name": "arma-tu-personaje",
+  "private": true,
+  "type": "module",
+  "description": "Configurador de personajes por departamento (Paguetodo, e-bCORP y Sirvalor) con base de datos Postgres en Render",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.mjs" },
+  "dependencies": { "pg": "^8.13.1" }
+}

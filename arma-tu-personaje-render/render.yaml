@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: arma-tu-personaje
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: personajes-db
+          property: connectionString
+      - key: ADMIN_TOKEN
+        generateValue: true
+
+databases:
+  - name: personajes-db
+    plan: free
+    databaseName: personajes

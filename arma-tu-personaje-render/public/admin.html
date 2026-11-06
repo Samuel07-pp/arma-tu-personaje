@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Solicitudes de personajes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--bg:#f3f6fc;--surface:#fff;--fg:#0b1633;--muted:#5a6788;--line:#d7def0;--blue:#0858ea;--soft:#e6eefe;--ok:#1f9d55;--warn:#b7791f;--bad:#d64545;
+  --f-d:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--f-b:"Figtree",system-ui,sans-serif;--f-m:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#070d1f;--surface:#0f1830;--fg:#e8edf9;--muted:#9aa8c8;--line:#22305a;--blue:#3d7dff;--soft:#16244a;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--f-b)}
+.wrap{max-width:1200px;margin:0 auto;padding:28px max(16px,env(safe-area-inset-left,0px)) 48px;display:flex;flex-direction:column;gap:18px}
+h1{font-family:var(--f-d);font-size:30px;margin:0}
+.muted{color:var(--muted)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+input,select{font:inherit;color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px 13px;border-radius:999px;font-weight:600}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;min-width:120px}
+.stat b{display:block;font-family:var(--f-d);font-size:22px;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td small{color:var(--muted)}
+.pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+.pill.pendiente{background:#fff4e0;color:var(--warn)}.pill.generado{background:#e3f6ec;color:var(--ok)}.pill.descartado{background:#fde8e8;color:var(--bad)}
+.co{display:inline-flex;align-items:center;gap:6px}.co i{width:9px;height:9px;border-radius:50%}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.acts button{padding:5px 10px;font-size:12.5px}
+#msg{min-height:20px}
+.login{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;max-width:520px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>Solicitudes de personajes</h1>
+    <div class="muted">Cada fila es un clic en «Generar personaje». Copia el prompt, genera en Magnific y marca la solicitud como generada.</div>
+  </div>
+
+  <form class="login" id="login">
+    <label for="token" class="muted">Clave del panel</label>
+    <input id="token" type="password" autocomplete="current-password" required>
+    <button class="primary" type="submit">Entrar</button>
+  </form>
+
+  <div id="panel" hidden>
+    <div class="stats" id="stats"></div>
+    <div class="bar" style="margin-top:14px">
+      <select id="fEmpresa"><option value="">Todas las empresas</option><option>Paguetodo</option><option>e-bCORP</option><option>Sirvalor</option></select>
+      <select id="fEstado"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="generado">Generado</option><option value="descartado">Descartado</option></select>
+      <input id="fTexto" type="search" placeholder="Buscar por nombre o departamento">
+      <button type="button" id="reload">Actualizar</button>
+      <button type="button" id="csv">Exportar CSV</button>
+      <button type="button" id="logout">Salir</button>
+    </div>
+    <div id="msg" class="muted" style="margin:10px 0"></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Fecha</th><th>Nombre</th><th>Empresa</th><th>Departamento</th><th>Personaje</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </div>
+</div>
+<script>
+const COLORS={"Paguetodo":"#0858ea","e-bCORP":"#155c5c","Sirvalor":"#792e24"};
+let token="", items=[], armed=null;
+try{token=sessionStorage.getItem("adm")||"";}catch(e){}
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function api(method,body,query){
+  const r=await fetch("/api/personajes"+(query||""),{method,headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error(d.error||"Error");e.status=r.status;throw e;}
+  return d;
+}
+async function load(){
+  $("msg").textContent="Cargando…";
+  try{const d=await api("GET");items=d.items||[];$("login").hidden=true;$("panel").hidden=false;try{sessionStorage.setItem("adm",token);}catch(e){}render();$("msg").textContent="";}
+  catch(e){if(e.status===401){$("login").hidden=false;$("panel").hidden=true;$("msg").textContent="";alertLogin("La clave no es correcta.");}else $("msg").textContent="No se pudieron cargar las solicitudes: "+e.message;}
+}
+function alertLogin(t){let p=$("login").querySelector(".err");if(!p){p=document.createElement("span");p.className="err";p.style.color="var(--bad)";$("login").appendChild(p);}p.textContent=t;}
+function filtered(){
+  const e=$("fEmpresa").value, s=$("fEstado").value, q=$("fTexto").value.trim().toLowerCase();
+  return items.filter(i=>(!e||i.empresa===e)&&(!s||i.estado===s)&&(!q||(i.nombre+" "+i.departamento).toLowerCase().includes(q)));
+}
+function resumen(i){const s=i.seleccion||{};return Object.values(s).join(" · ")+(i.accesorios&&i.accesorios.length?" · "+i.accesorios.join(", "):"");}
+function render(){
+  const c={total:items.length,pendiente:0,generado:0,descartado:0}; items.forEach(i=>c[i.estado]=(c[i.estado]||0)+1);
+  $("stats").innerHTML=[["Total",c.total],["Pendientes",c.pendiente],["Generados",c.generado],["Descartados",c.descartado]].map(([l,n])=>`<div class="stat"><span class="muted">${l}</span><b>${n}</b></div>`).join("");
+  const list=filtered();
+  $("rows").innerHTML=list.length?list.map(i=>`<tr>
+    <td>${new Date(i.creado).toLocaleString("es-VE",{dateStyle:"short",timeStyle:"short"})}</td>
+    <td><b>${esc(i.nombre)}</b><br><small>${esc(i.sexo)}</small></td>
+    <td><span class="co"><i style="background:${COLORS[i.empresa]||"#888"}"></i>${esc(i.empresa)}</span></td>
+    <td>${esc(i.departamento)}<br><small>${esc(i.pose)}${i.objeto&&i.objeto!=="Ninguno"?" · "+esc(i.objeto):""}</small></td>
+    <td style="max-width:320px"><small>${esc(resumen(i))}</small></td>
+    <td><span class="pill ${esc(i.estado)}">${esc(i.estado)}</span></td>
+    <td><div class="acts">
+      <button type="button" data-copy="${esc(i.id)}">Copiar prompt</button>
+      ${i.estado!=="generado"?`<button type="button" data-st="generado" data-id="${esc(i.id)}">Marcar generado</button>`:`<button type="button" data-st="pendiente" data-id="${esc(i.id)}">Volver a pendiente</button>`}
+      ${i.estado!=="descartado"?`<button type="button" data-st="descartado" data-id="${esc(i.id)}">Descartar</button>`:""}
+      <button type="button" data-del="${esc(i.id)}">${armed===i.id?"Confirmar borrado":"Borrar"}</button>
+    </div></td></tr>`).join(""):`<tr><td colspan="7" class="muted">Todavía no hay solicitudes${items.length?" con estos filtros":""}. Aparecerán aquí cuando alguien pulse «Generar personaje».</td></tr>`;
+}
+$("login").addEventListener("submit",e=>{e.preventDefault();token=$("token").value.trim();load();});
+["fEmpresa","fEstado","fTexto"].forEach(id=>$(id).addEventListener("input",render));
+$("reload").onclick=load;
+$("logout").onclick=()=>{token="";try{sessionStorage.removeItem("adm");}catch(e){} $("panel").hidden=true;$("login").hidden=false;};
+$("rows").addEventListener("click",async e=>{
+  const b=e.target.closest("button"); if(!b) return;
+  if(b.dataset.copy){const i=items.find(x=>x.id===b.dataset.copy);try{await navigator.clipboard.writeText(i.prompt);b.textContent="Copiado";}catch(_){b.textContent="No se pudo copiar";}setTimeout(render,1400);return;}
+  if(b.dataset.st){try{const d=await api("PATCH",{id:b.dataset.id,estado:b.dataset.st});const k=items.findIndex(x=>x.id===b.dataset.id);items[k]=d.item;render();}catch(err){$("msg").textContent="No se pudo actualizar: "+err.message;}return;}
+  if(b.dataset.del){if(armed!==b.dataset.del){armed=b.dataset.del;render();return;}
+    try{await api("DELETE",null,"?id="+encodeURIComponent(armed));items=items.filter(x=>x.id!==armed);armed=null;render();}catch(err){$("msg").textContent="No se pudo borrar: "+err.message;}}
+});
+$("csv").onclick=()=>{
+  const cols=["creado","nombre","empresa","sexo","departamento","resumen","prendaEnColor","pose","objeto","estado","prompt"];
+  const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const lines=[cols.join(",")].concat(filtered().map(i=>cols.map(c=>q(c==="resumen"?resumen(i):i[c])).join(",")));
+  const blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="personajes-"+new Date().toISOString().slice(0,10)+".csv";a.click();URL.revokeObjectURL(a.href);
+};
+if(token) load();
+</script>
+</body>
+</html>
