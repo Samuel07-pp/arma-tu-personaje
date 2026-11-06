@@ -1,0 +1,4 @@
+Coloca aquí los archivos de las tipografías de marca:
+- Mouzambik.woff2 (o .otf / .ttf)
+- Aceh-Regular.woff2 y Aceh-SemiBold.woff2 (o .otf / .ttf)
+La página los usa automáticamente al publicarse.
