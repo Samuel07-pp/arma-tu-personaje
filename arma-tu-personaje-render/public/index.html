@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Arma tu personaje</title>
+<title>Arma tu avatar departamental</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Lexend:wght@300;400;500;600&display=swap">
 <style>
@@ -18,6 +18,7 @@
   --bg:#121214; --shell:#1b1b1f; --card:rgba(255,255,255,.055); --card2:rgba(255,255,255,.09); --stroke:rgba(255,255,255,.09);
   --fg:#f3f3f5; --muted:#9a9aa6; --paper:#f5f6fa; --ok:#2fb86a; --warn:#ebca0a; --bad:#ff6b6b;
   --glow:#0858ea;
+  --halo:drop-shadow(0 0 .6px rgba(255,255,255,.95)) drop-shadow(0 0 1.2px rgba(255,255,255,.8)) drop-shadow(0 0 10px rgba(255,255,255,.18));
   --f-title:"Mouzambik","Unbounded","Trebuchet MS",system-ui,sans-serif;
   --f-body:"Aceh","Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r-xl:28px; --r-lg:22px; --r-md:16px;
@@ -33,9 +34,9 @@ button{font:inherit;cursor:pointer;color:inherit}
 button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:2px}
 
 .page{padding-block:24px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.shell{max-width:1240px;margin:0 auto;background:var(--shell);border:1px solid var(--stroke);border-radius:34px;padding:18px;display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;
+.shell{max-width:1240px;margin:0 auto;background:var(--shell);border:1px solid var(--stroke);border-radius:34px;padding:22px;display:block;
   box-shadow:0 40px 80px -30px rgba(0,0,0,.6)}
-@media (max-width:760px){.shell{grid-template-columns:1fr;padding:12px;border-radius:26px}}
+@media (max-width:760px){.shell{padding:12px;border-radius:26px}}
 
 /* Riel lateral */
 .rail{background:#0f0f12;border-radius:22px;padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:10px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);height:max-content}
@@ -62,9 +63,9 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 .card .sub{font-size:12px;color:var(--muted)}
 
 /* Hero */
-.hero{position:relative;overflow:hidden;padding:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);min-height:520px;
-  background:radial-gradient(520px 420px at 72% 40%, color-mix(in srgb,var(--glow) 55%, transparent), transparent 70%), linear-gradient(140deg, rgba(255,255,255,.07), rgba(255,255,255,.02))}
-.hero::after{content:"";position:absolute;right:-60px;top:40px;width:520px;height:520px;border-radius:50%;border:1px solid rgba(255,255,255,.08);pointer-events:none}
+.hero{position:relative;overflow:hidden;padding:0;display:flex;flex-direction:column;align-items:center;min-height:560px;
+  background:radial-gradient(520px 420px at 50% 45%, color-mix(in srgb,var(--glow) 55%, transparent), transparent 70%), linear-gradient(140deg, rgba(255,255,255,.07), rgba(255,255,255,.02))}
+.hero::after{content:"";position:absolute;left:50%;transform:translateX(-50%);top:30px;width:520px;height:520px;border-radius:50%;border:1px solid rgba(255,255,255,.08);pointer-events:none}
 .hero-copy{padding:30px 26px 140px;display:flex;flex-direction:column;gap:16px;z-index:1}
 .hero-copy .kicker{font-size:12px;color:#d8d8de;display:flex;align-items:center;gap:8px}
 .hero-copy .kicker i{width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 12px var(--glow)}
@@ -77,9 +78,16 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 .confirm[data-state="dirty"] .cmsg{color:var(--warn)}
 .confirm[data-state="error"] .cmsg{color:var(--bad)}
 .confirm{display:flex;flex-direction:column;gap:10px}
+.cta{display:flex;justify-content:center}
+.cta .confirm{align-items:center;text-align:center}
+.cta .go{align-self:center;padding:16px 34px;font-size:15px}
+.cta .cmsg{max-width:52ch}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.stagewrap{position:relative;display:flex;align-items:flex-end;justify-content:center;padding:24px 10px 96px;z-index:1}
-.stagewrap .disc{position:absolute;bottom:100px;height:min(78%,440px);left:50%;transform:translateX(-50%);width:min(76%,290px);border-radius:999px 999px 30px 30px;background:radial-gradient(circle at 50% 40%, #ffffff 0, var(--paper) 55%, #dfe3ec 100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.55)}
+.stagewrap{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:22px 10px 104px;z-index:1;flex:1}
+.hero-logo{height:72px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;z-index:2}
+.hero-logo img{max-height:72px;max-width:250px;width:auto;object-fit:contain;filter:var(--halo)}
+.hero-logo .wm{font-family:var(--f-title);font-weight:700;font-size:40px;color:#5fc6b3;letter-spacing:-.01em}
+.stagewrap .disc{position:absolute;bottom:100px;height:min(78%,440px);left:50%;transform:translateX(-50%);width:min(88%,350px);border-radius:999px 999px 30px 30px;background:radial-gradient(circle at 50% 35%, #fdf9f1 0, #f6eedf 60%, #eadfca 100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.55)}
 .stagewrap svg{position:relative;width:min(100%,400px);height:auto;max-width:100%;margin-bottom:-4px}
 .tag{position:absolute;top:18px;right:18px;font-size:11px;color:#e8e8ec;background:rgba(0,0,0,.35);border:1px solid var(--stroke);padding:5px 10px;border-radius:999px;z-index:2}
 .statbar{position:absolute;left:14px;right:14px;bottom:14px;z-index:3;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;
@@ -88,15 +96,15 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 .stat span{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:4px}
 .stat span i{width:8px;height:8px;border-radius:3px}
 .stat::after{content:"";display:block;height:2px;width:60%;margin-top:8px;border-radius:2px;background:linear-gradient(90deg,var(--c,#fff),transparent)}
-@media (max-width:640px){.hero{grid-template-columns:1fr;min-height:0}.hero-copy{padding:24px 20px 0}.stagewrap{padding:10px 10px 20px;min-height:380px}.stagewrap .disc{bottom:20px}.statbar{position:relative;left:auto;right:auto;bottom:auto;margin:0 12px 12px;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:12px}.co{gap:6px}.cobtn{padding:7px}.cobtn .logo .wm{font-size:12px}}
+@media (max-width:640px){.hero{min-height:0}.stagewrap{padding:16px 10px 20px;min-height:430px}.stagewrap .disc{bottom:20px}.statbar{position:relative;left:auto;right:auto;bottom:auto;margin:0 12px 12px;align-self:stretch;grid-template-columns:repeat(2,minmax(0,1fr));row-gap:12px}.co{gap:6px}.cobtn{padding:7px}.cobtn .logo .wm{font-size:12px}}
 
 /* Columna derecha */
 .side{display:flex;flex-direction:column;gap:18px;min-width:0}
 .co{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
 .cobtn{border:1.5px solid transparent;background:var(--card2);border-radius:var(--r-md);padding:10px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:left;transition:.2s;min-width:0}
-.cobtn .logo{height:56px;border-radius:12px;background:#fff;display:grid;place-items:center;padding:8px 10px}
-.cobtn .logo img{max-height:40px;width:auto;object-fit:contain}
-.cobtn .logo .wm{white-space:nowrap;font-family:var(--f-title);font-weight:700;font-size:15px;color:#155c5c;letter-spacing:-.01em}
+.cobtn .logo{height:64px;border-radius:12px;background:transparent;display:grid;place-items:center;padding:6px 8px}
+.cobtn .logo img{max-height:46px;width:auto;object-fit:contain;filter:var(--halo)}
+.cobtn .logo .wm{white-space:nowrap;color:#5fc6b3!important;font-size:24px!important;font-family:var(--f-title);font-weight:700;font-size:15px;color:#155c5c;letter-spacing:-.01em}
 .cobtn small{font-size:11px;color:var(--muted);line-height:1.25;padding:0 2px}
 .cobtn[aria-pressed="true"]{border-color:#fff;background:rgba(255,255,255,.14)}
 .cobtn:hover{background:rgba(255,255,255,.12)}
@@ -131,6 +139,7 @@ select option{background:#1b1b1f;color:#f3f3f5}
 .chip .ck{width:13px;height:13px;border-radius:4px;border:1.5px solid currentColor;opacity:.6;display:inline-flex;align-items:center;justify-content:center}
 .chip.multi[aria-pressed="true"] .ck{opacity:1;background:#111;border-color:#111}
 .chip.multi[aria-pressed="true"] .ck::after{content:"";width:6px;height:3px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
+.acc-full .chip.multi[aria-pressed="false"]{opacity:.35;cursor:not-allowed}
 .note{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--muted);margin-top:12px;padding:0 4px}
 .note .dot{margin-top:4px}
 .colorrow{margin-top:10px}
@@ -140,21 +149,12 @@ select option{background:#1b1b1f;color:#f3f3f5}
 <body>
 <div class="page">
  <div class="shell">
-  <nav class="rail" aria-label="Secciones">
-    <div class="mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#111"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="#111"/></svg></div>
-    <a href="#s-hero" class="on" title="Vista previa"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3"/><circle cx="12" cy="10" r="3"/><path d="M7 18c1-2.5 3-3.5 5-3.5s4 1 5 3.5"/></svg></a>
-    <a href="#s-emp" title="Empresa"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M9 7V5h6v2M4 12h16"/></svg></a>
-    <a href="#s-sex" title="Personaje"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20c1.4-3.6 4-5.4 7-5.4s5.6 1.8 7 5.4"/></svg></a>
-    <a href="#s-tabs" data-jump="hair" title="Cabello"><svg viewBox="0 0 24 24"><path d="M6 14c0-6 2.7-9 6-9s6 3 6 9M6 14c0 3 1 6 2 6M18 14c0 3-1 6-2 6"/><path d="M9 9c2 1 4 1 6 0"/></svg></a>
-    <a href="#s-tabs" data-jump="out" title="Outfit"><svg viewBox="0 0 24 24"><path d="M9 4l3 2 3-2 5 3-2 4-2-1v10H8V10l-2 1-2-4z"/></svg></a>
-    <a href="#s-tabs" data-jump="acc" title="Accesorios"><svg viewBox="0 0 24 24"><circle cx="8" cy="14" r="4"/><circle cx="16" cy="14" r="4"/><path d="M12 14h0M4 14l-1-4M20 14l1-4"/></svg></a>
-  </nav>
 
   <main class="content">
     <div class="top">
       <div>
         <div class="eyebrow">Jugamos alineados</div>
-        <h1>Arma tu personaje</h1>
+        <h1>Arma tu avatar departamental</h1>
       </div>
       <div class="tools">
         <button class="iconbtn" id="rnd" type="button" title="Combinación aleatoria"><svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Aleatorio</button>
@@ -164,17 +164,8 @@ select option{background:#1b1b1f;color:#f3f3f5}
 
     <div class="grid">
       <section class="card hero" id="s-hero" aria-label="Vista previa del personaje">
-        <div class="hero-copy">
-          <div class="kicker"><i></i><span id="heroCo">Paguetodo</span></div>
-          <h3>Tu departamento, tu personaje</h3>
-          <form class="confirm" id="confirmBox" data-state="idle" novalidate>
-            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-            <button class="go" id="confirmBtn" type="submit"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Generar personaje</button>
-            <span class="cmsg" id="confirmMsg">Cuando termines de combinar, pulsa Generar personaje para registrarlo en tu departamento.</span>
-          </form>
-        </div>
         <div class="stagewrap">
-          <span class="tag" id="tagline">Vista previa</span>
+          <div class="hero-logo" id="heroLogo" aria-hidden="false"></div>
           <div class="disc" aria-hidden="true"></div>
           <svg id="preview" viewBox="0 0 300 440" role="img" aria-label="Vista previa del personaje"></svg>
         </div>
@@ -230,6 +221,14 @@ select option{background:#1b1b1f;color:#f3f3f5}
         <div id="accRows" class="rows"></div>
         <div class="note"><i class="dot" id="noteDot"></i><span id="noteTxt"></span></div>
       </div>
+    </section>
+
+    <section class="card cta" aria-label="Generar personaje">
+      <form class="confirm" id="confirmBox" data-state="idle" novalidate>
+        <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+        <button class="go" id="confirmBtn" type="submit"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Generar personaje</button>
+        <span class="cmsg" id="confirmMsg">Cuando termines de combinar, pulsa Generar personaje para registrarlo en tu departamento.</span>
+      </form>
     </section>
   </main>
  </div>
@@ -355,6 +354,7 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 let st=load();
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.f&&s.m){const d=clone(DEF);Object.assign(d,s);d.f=Object.assign(clone(DEF.f),s.f);d.m=Object.assign(clone(DEF.m),s.m);return d;}}catch(e){}return clone(DEF);}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+["f","m"].forEach(k=>{st[k].acc=(st[k].acc||[]).slice(0,4);});
 let X=st[st.sex];
 const O=()=>OPT[st.sex];
 const find=(g,id)=>O()[g].find(o=>o.id===id);
@@ -366,9 +366,10 @@ const accentIsAcc=k=>firstAccent()===k;
 
 /* ---------- Paleta activa ---------- */
 let LINE,HAIR,MASS,ACC,ALT,S,HS,HC;
-function setPal(){const c=co();LINE=c.pline||c.line;HAIR=c.hair;MASS=c.mass;ACC=c.accent;ALT=c.alt;
-  S=`stroke="${LINE}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"`;
-  HS=c.pline?LINE:c.hair; HC=c.pline?` stroke="${LINE}" stroke-width="2.4"`:"";}
+const SKIN="#f6ad8f", SKIN_D="#e8907a", EYE="#3a1d16", BLUSH="#f2857a";
+function setPal(){const c=co();LINE=c.line;HAIR=c.id==="ebcorp"?"#0c3e3e":c.hair;MASS=c.mass;ACC=c.accent;ALT=c.alt;
+  S=`stroke="${LINE}" stroke-opacity=".16" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"`;
+  HS=HAIR; HC="";}
 
 /* ---------- Utilidades de cabello ---------- */
 function qpt(p0,p1,p2,t){const u=1-t;return [u*u*p0[0]+2*u*t*p1[0]+t*t*p2[0], u*u*p0[1]+2*u*t*p1[1]+t*t*p2[1]];}
@@ -500,13 +501,13 @@ function mHats(){
 /* ---------- Cuerpo ---------- */
 const armL=`M112 150 C100 170 96 205 98 238 L114 238 C114 205 118 178 124 162 Z`;
 const armR=`M188 150 C200 170 204 205 202 238 L186 238 C186 205 182 178 176 162 Z`;
-function hands(){return `<circle cx="105" cy="246" r="10" fill="${WHITE}" ${S}/><circle cx="195" cy="246" r="10" fill="${WHITE}" ${S}/>`;}
+function hands(){return `<circle cx="105" cy="246" r="10" fill="${SKIN}"/><circle cx="195" cy="246" r="10" fill="${SKIN}"/>`;}
 function colors(){const c=st.color;return {top:(c==="top"||c==="both")?MASS:WHITE, bottom:(c==="bottom"||c==="both")?MASS:(c==="top"?ALT:WHITE)};}
 const stripe=c=>c===WHITE?LINE:WHITE;
 function bottomSVG(c){
   const b=X.bottom, k=stripe(c);
   if(b==="skinny") return `<path d="M114 240 L186 240 L182 392 L156 392 L150 290 L144 392 L118 392 Z" fill="${c}" ${S}/>`;
-  if(b==="falda") return `<path d="M127 318 L127 392 L143 392 L143 318 Z M157 318 L157 392 L173 392 L173 318 Z" fill="${WHITE}" ${S}/><path d="M114 238 L186 238 L202 324 Q150 334 98 324 Z" fill="${c}" ${S}/>`;
+  if(b==="falda") return `<path d="M127 318 L127 392 L143 392 L143 318 Z M157 318 L157 392 L173 392 L173 318 Z" fill="${SKIN}"/><path d="M114 238 L186 238 L202 324 Q150 334 98 324 Z" fill="${c}" ${S}/>`;
   if(b==="oversizep") return `<path d="M108 240 L192 240 L202 394 L154 394 L150 298 L146 394 L98 394 Z" fill="${c}" ${S}/><path d="M124 300 L120 392 M176 300 L180 392" fill="none" stroke="${k}" stroke-width="1.2" opacity=".4"/>`;
   if(b==="sport") return `<path d="M112 240 L188 240 L186 382 L156 382 L150 292 L144 382 L114 382 Z" fill="${c}" ${S}/>
     <rect x="113" y="378" width="32" height="13" rx="5" fill="${c}" ${S}/><rect x="155" y="378" width="32" height="13" rx="5" fill="${c}" ${S}/>
@@ -525,7 +526,7 @@ function shoesSVG(){
   return one(lx)+one(rx);
 }
 const sleevesLong=(c)=>`<path d="M108 150 C96 170 92 206 94 234 L118 234 C118 200 122 176 128 162 Z" fill="${c}" ${S}/><path d="M192 150 C204 170 208 206 206 234 L182 234 C182 200 178 176 172 162 Z" fill="${c}" ${S}/>`;
-const sleevesShort=(c,wide)=>`<path d="${armL}" fill="${WHITE}" ${S}/><path d="${armR}" fill="${WHITE}" ${S}/>`+(wide?
+const sleevesShort=(c,wide)=>`<path d="${armL}" fill="${SKIN}"/><path d="${armR}" fill="${SKIN}"/>`+(wide?
   `<path d="M108 150 C96 162 90 178 88 196 L120 200 C120 186 122 172 126 160 Z" fill="${c}" ${S}/><path d="M192 150 C204 162 210 178 212 196 L180 200 C180 186 178 172 174 160 Z" fill="${c}" ${S}/>`:
   `<path d="M112 150 C104 160 101 168 100 180 L121 182 C121 172 122 166 124 160 Z" fill="${c}" ${S}/><path d="M188 150 C196 160 199 168 200 180 L179 182 C179 172 178 166 176 160 Z" fill="${c}" ${S}/>`);
 function topSVG(c){
@@ -566,11 +567,13 @@ function topSVG(c){
     <path d="M144 150 L142 176 M156 150 L158 176" fill="none" stroke="${on}" stroke-width="2.2" stroke-linecap="round"/><path d="M126 222 L174 222 L180 248 L120 248 Z" fill="none" stroke="${on}" stroke-width="2"/>`;
 }
 function head(){return `
- <ellipse cx="121" cy="104" rx="6" ry="8" fill="${WHITE}" ${S}/><ellipse cx="179" cy="104" rx="6" ry="8" fill="${WHITE}" ${S}/>
- <ellipse cx="150" cy="100" rx="28" ry="32" fill="${WHITE}" ${S}/>
- <path d="M133 92 Q139 88 145 91 M155 91 Q161 88 167 92" fill="none" stroke="${LINE}" stroke-width="4" stroke-linecap="round"/>
- <circle cx="139" cy="103" r="2.6" fill="${LINE}"/><circle cx="161" cy="103" r="2.6" fill="${LINE}"/>
- <path d="M141 116 Q150 123 159 116" fill="none" ${S}/>`;}
+ <ellipse cx="121" cy="104" rx="6" ry="8" fill="${SKIN_D}"/><ellipse cx="179" cy="104" rx="6" ry="8" fill="${SKIN_D}"/>
+ <ellipse cx="150" cy="100" rx="28" ry="32" fill="${SKIN}"/>
+ <path d="M133 91 Q139 87 145 90 M155 90 Q161 87 167 91" fill="none" stroke="${HAIR}" stroke-width="3.6" stroke-linecap="round"/>
+ <ellipse cx="139" cy="102" rx="3" ry="3.6" fill="${EYE}"/><ellipse cx="161" cy="102" rx="3" ry="3.6" fill="${EYE}"/>
+ <ellipse cx="133" cy="112" rx="5" ry="2.6" fill="${BLUSH}" opacity=".45"/><ellipse cx="167" cy="112" rx="5" ry="2.6" fill="${BLUSH}" opacity=".45"/>
+ <path d="M150 104 L148 111 L151 111" fill="none" stroke="${SKIN_D}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="M143 117 Q150 123 157 117" fill="${EYE}" stroke="${EYE}" stroke-width="1.4" stroke-linejoin="round"/>`;}
 const F=k=>accentIsAcc(k)?ACC:WHITE;
 const has=k=>X.acc.includes(k);
 function accBody(){
@@ -633,7 +636,7 @@ function charSVG(){
   setPal(); X=st[st.sex];
   const c=colors(), M=male();
   let g = M? mHairBack() : fHairBack();
-  g+=`<rect x="141" y="122" width="18" height="24" fill="${WHITE}" ${S}/>`;
+  g+=`<rect x="141" y="122" width="18" height="24" fill="${SKIN_D}"/>`;
   g+=bottomSVG(c.bottom)+shoesSVG()+topSVG(c.top)+accBody()+hands();
   g+=head();
   if(M) g+=mFace();
@@ -642,7 +645,7 @@ function charSVG(){
   g+=accHead();
   g+= M? mHairSides() : fHairSides();
   g+=accFace()+accHands();
-  if(st.prop!=="none") g+=propSVG()+`<circle cx="195" cy="246" r="10" fill="${WHITE}" ${S}/>`;
+  if(st.prop!=="none") g+=propSVG()+`<circle cx="195" cy="246" r="10" fill="${SKIN}"/>`;
   return g;
 }
 
@@ -705,10 +708,13 @@ function buildPrompt(){
 
 /* ---------- UI ---------- */
 const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const MAX_ACC=4;
+function flashAccLimit(){const n=document.getElementById("accCount"); if(!n) return; n.textContent=`Máximo ${MAX_ACC} accesorios: quita uno para elegir otro`; n.style.color="#ffb84d"; clearTimeout(flashAccLimit.t); flashAccLimit.t=setTimeout(()=>{n.style.color="";paintAccCount();},2200);}
+function paintAccCount(){const n=document.getElementById("accCount"); if(n) n.textContent=`${X.acc.length} de ${MAX_ACC} elegidos`; const box=document.getElementById("accRows"); if(box) box.classList.toggle("acc-full", X.acc.length>=MAX_ACC);}
 const LOGOS={paguetodo:'<img src="/logos/paguetodo.png" alt="Paguetodo">',sirvalor:'<img src="/logos/sirvalor.png" alt="Sirvalor">',ebcorp:'<span class="wm">e-bCORP</span>'};
 function renderCompanies(){
   document.getElementById("coOpts").innerHTML=COMPANIES.map(c=>`<button type="button" class="cobtn" id="co-${c.id}" data-co="${c.id}" aria-pressed="false" aria-label="${c.name}">
-    <span class="logo">${LOGOS[c.id]||c.name}</span><small>${c.desc}</small></button>`).join("");
+    <span class="logo">${LOGOS[c.id]||c.name}</span></button>`).join("");
 }
 function rowHTML(g,label,hint){
   const multi=g==="acc";
@@ -718,7 +724,7 @@ function renderRows(){
   const R=ROWS[st.sex];
   document.getElementById("hairRows").innerHTML=R.hair.map(r=>rowHTML(r[0],r[1],r[2])).join("");
   document.getElementById("outRows").innerHTML=R.out.map(r=>rowHTML(r[0],r[1],r[2])).join("");
-  document.getElementById("accRows").innerHTML=rowHTML("acc","Combina los que quieras");
+  document.getElementById("accRows").innerHTML=rowHTML("acc","Accesorios",`<span id="accCount"></span>`);
   document.getElementById("t-hair").textContent = male()?"Cabello y rostro":"Cabello";
 }
 function renderCompanyLists(){
@@ -751,13 +757,12 @@ function render(){
   else {accLg.hidden=true;document.getElementById("noteDot").style.background=C.line;
     document.getElementById("noteTxt").textContent="Sirvalor no usa color de acento: sus personajes trabajan solo con vinotinto, azul marino y blanco.";}
   document.getElementById("colorHint").textContent={paguetodo:"en Paguetodo, una sola prenda",ebcorp:"en e-bCORP, normalmente ambas",sirvalor:"en Sirvalor, la prenda superior; el pantalón va en azul marino"}[C.id];
-  document.getElementById("tagline").textContent=`${C.name} · ${(C.depts.find(d=>d[0]===st.dept)||C.depts[0])[1]} · ${male()?"masculino":"femenino"}`;
-  updateHero(C);
+  updateHero(C); paintAccCount();
   save(); paintConfirm();
 }
 function updateHero(C){
   document.documentElement.style.setProperty("--glow", C.mass);
-  document.getElementById("heroCo").textContent=C.name;
+  const hl=document.getElementById("heroLogo"); if(hl.dataset.co!==C.id){hl.dataset.co=C.id; hl.innerHTML=LOGOS[C.id]||C.name;}
   document.getElementById("stCo").textContent=C.name;
   document.getElementById("stCoDot").style.background=C.mass;
   document.getElementById("stCoWrap").style.setProperty("--c", C.id==="sirvalor"?"#e08a7e":(C.id==="ebcorp"?"#5fc6b3":"#6ea0ff"));
@@ -779,7 +784,7 @@ function setCompany(id){
   st.company=id;
   if(!C.depts.some(d=>d[0]===st.dept)) st.dept=C.depts[0][0];
   if(st.prop!=="none" && !C.props.includes(st.prop)) st.prop=C.props[0];
-  if(id!=="paguetodo") ["f","m"].forEach(s=>{if(!st[s].acc.includes("carnet")) st[s].acc.push("carnet");});
+  if(id!=="paguetodo") ["f","m"].forEach(s=>{if(!st[s].acc.includes("carnet") && st[s].acc.length<MAX_ACC) st[s].acc.push("carnet");});
   X=st[st.sex]; autoColor(); renderCompanyLists(); render();
 }
 function setSex(s){st.sex=s; X=st[s]; autoColor(); renderRows(); render();}
@@ -788,7 +793,7 @@ document.addEventListener("click",e=>{
   const sx=e.target.closest("[data-sex]"); if(sx){setSex(sx.dataset.sex);return;}
   const b=e.target.closest("[data-g]");
   if(b){const g=b.dataset.g,v=b.dataset.v;
-    if(g==="acc"){X.acc=X.acc.includes(v)?X.acc.filter(x=>x!==v):[...X.acc,v];
+    if(g==="acc"){ if(!X.acc.includes(v) && X.acc.length>=MAX_ACC){ flashAccLimit(); return; } X.acc=X.acc.includes(v)?X.acc.filter(x=>x!==v):[...X.acc,v];
       if(v==="gorra"&&X.acc.includes("gorra")) X.acc=X.acc.filter(x=>x!=="gorro");
       if(v==="gorro"&&X.acc.includes("gorro")) X.acc=X.acc.filter(x=>x!=="gorra");}
     else { X[g]=v; if(g==="top" && co().defColor!=="both") st.color=find("top",v).auto; }
@@ -801,7 +806,7 @@ document.getElementById("rnd").onclick=()=>{
   const pick=a=>a[Math.floor(Math.random()*a.length)];
   Object.keys(ROWS[st.sex].hair.concat(ROWS[st.sex].out).reduce((o,r)=>(o[r[0]]=1,o),{})).forEach(g=>X[g]=pick(O()[g]).id);
   const C=co(); autoColor(); st.pose=pick(POSES).id; st.dept=pick(C.depts)[0]; st.prop=pick(["none"].concat(C.props));
-  X.acc=O().acc.filter(()=>Math.random()<.25).map(a=>a.id);
+  X.acc=O().acc.filter(()=>Math.random()<.25).map(a=>a.id).slice(0,3);
   if(X.acc.includes("gorra")&&X.acc.includes("gorro")) X.acc=X.acc.filter(x=>x!=="gorro");
   if(C.id!=="paguetodo"&&!X.acc.includes("carnet")) X.acc.push("carnet");
   render();
