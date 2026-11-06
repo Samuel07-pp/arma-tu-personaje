@@ -179,22 +179,12 @@ pre{margin:0;font-family:var(--f-mono);font-size:12.5px;line-height:1.6;white-sp
   </div>
 
   <form class="confirm" id="confirmBox" data-state="idle" novalidate>
-    <label for="nombre" class="namefield">Tu nombre<input id="nombre" name="nombre" type="text" autocomplete="name" maxlength="80" placeholder="Nombre y apellido" required></label>
     <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
     <button class="btn ok" id="confirmBtn" type="submit"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Generar personaje</button>
-    <span class="cmsg" id="confirmMsg">Cuando termines de combinar, escribe tu nombre y pulsa Generar personaje. Tu selección llega al equipo de marca, que generará la ilustración.</span>
+    <span class="cmsg" id="confirmMsg">Cuando termines de combinar, pulsa Generar personaje. La selección queda registrada para tu departamento y el equipo de marca generará la ilustración.</span>
   </form>
 
-  <section class="promptbox">
-    <div class="phead">
-      <h2>Prompt para Magnific</h2>
-      <button class="btn primary" id="copy" type="button">Copiar prompt</button>
-    </div>
-    <pre id="prompt"></pre>
-    <div class="sources">
-      <span id="srcCo">Estilo base: serie de personajes por departamento</span>
-    </div>
-  </section>
+
 </div>
 
 <script>
@@ -713,8 +703,6 @@ function render(){
     document.getElementById("noteTxt").textContent="Sirvalor no usa color de acento: sus personajes trabajan solo con vinotinto, azul marino y blanco.";}
   document.getElementById("colorHint").textContent={paguetodo:"en Paguetodo, una sola prenda",ebcorp:"en e-bCORP, normalmente ambas",sirvalor:"en Sirvalor, la prenda superior; el pantalón va en azul marino"}[C.id];
   document.getElementById("tagline").textContent=`${C.name} · ${(C.depts.find(d=>d[0]===st.dept)||C.depts[0])[1]} · ${male()?"masculino":"femenino"}`;
-  document.getElementById("srcCo").textContent=`Estilo base: serie de personajes por departamento de ${C.name}`;
-  document.getElementById("prompt").textContent=buildPrompt();
   save(); paintConfirm();
 }
 function autoColor(){const C=co(); st.color = C.defColor==="both" ? "both" : find("top",st[st.sex].top).auto;}
@@ -750,13 +738,6 @@ document.getElementById("rnd").onclick=()=>{
   if(C.id!=="paguetodo"&&!X.acc.includes("carnet")) X.acc.push("carnet");
   render();
 };
-const copyBtn=document.getElementById("copy");
-copyBtn.onclick=()=>{
-  const t=document.getElementById("prompt").textContent;
-  const done=()=>{copyBtn.textContent="Copiado";setTimeout(()=>copyBtn.textContent="Copiar prompt",1600);};
-  const fallback=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById("prompt"));const s=getSelection();s.removeAllRanges();s.addRange(r);copyBtn.textContent="Texto seleccionado";setTimeout(()=>copyBtn.textContent="Copiar prompt",1800);};
-  try{navigator.clipboard.writeText(t).then(done,fallback);}catch(e){fallback();}
-};
 
 /* ---------- Envío a la base de datos ---------- */
 let sentSig=null, sending=false;
@@ -764,18 +745,16 @@ const sigOf=x=>{const sub=x[x.sex]||{};return JSON.stringify([x.sex,x.company,x.
 function paintConfirm(){
   if(sending) return;
   const box=document.getElementById("confirmBox"), msg=document.getElementById("confirmMsg");
-  if(sentSig&&sentSig===sigOf(st)){box.dataset.state="ok";msg.textContent="Recibimos tu personaje. El equipo de marca generará la ilustración con esta selección.";}
+  if(sentSig&&sentSig===sigOf(st)){box.dataset.state="ok";msg.textContent="Personaje registrado para tu departamento. El equipo de marca generará la ilustración con esta selección.";}
   else if(sentSig){box.dataset.state="dirty";msg.textContent="Hiciste cambios después de enviar. Pulsa Generar personaje otra vez para enviar la versión nueva.";}
-  else {box.dataset.state="idle";msg.textContent="Cuando termines de combinar, escribe tu nombre y pulsa Generar personaje. Tu selección llega al equipo de marca, que generará la ilustración.";}
+  else {box.dataset.state="idle";msg.textContent="Cuando termines de combinar, pulsa Generar personaje. La selección queda registrada para tu departamento y el equipo de marca generará la ilustración.";}
 }
 document.getElementById("confirmBox").addEventListener("submit",async ev=>{
   ev.preventDefault();
   const box=document.getElementById("confirmBox"), msg=document.getElementById("confirmMsg"), b=document.getElementById("confirmBtn");
-  const nombre=document.getElementById("nombre").value.trim();
-  if(!nombre){box.dataset.state="error";msg.textContent="Escribe tu nombre para que el equipo sepa de quién es el personaje.";document.getElementById("nombre").focus();return;}
   X=st[st.sex]; const C=co(), nm=g=>find(g,X[g]).name;
   const sel={}; ROWS[st.sex].hair.concat(ROWS[st.sex].out).forEach(r=>sel[r[1]]=nm(r[0]));
-  const payload={nombre, website:document.getElementById("website").value, empresa:C.name, sexo:male()?"Masculino":"Femenino",
+  const payload={website:document.getElementById("website").value, empresa:C.name, sexo:male()?"Masculino":"Femenino",
     departamento:(C.depts.find(d=>d[0]===st.dept)||C.depts[0])[1], seleccion:sel,
     prendaEnColor:{top:"superior",bottom:"inferior",both:"ambas"}[st.color],
     accesorios:O().acc.filter(a=>X.acc.includes(a.id)).map(a=>a.name),
@@ -787,11 +766,9 @@ document.getElementById("confirmBox").addEventListener("submit",async ev=>{
     const d=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(d.error||"No se pudo guardar");
     sentSig=sigOf(st);
-    try{localStorage.setItem("arma-personaje-nombre",nombre);}catch(e){}
   }catch(e){sending=false;b.disabled=false;box.dataset.state="error";msg.textContent="No se pudo enviar tu personaje. Revisa tu conexión e inténtalo otra vez.";return;}
   sending=false; b.disabled=false; paintConfirm();
 });
-try{const n=localStorage.getItem("arma-personaje-nombre"); if(n) document.getElementById("nombre").value=n;}catch(e){}
 
 renderCompanies(); renderRows(); renderCompanyLists(); render();
 </script>

@@ -19,11 +19,13 @@ await pool.query(`CREATE TABLE IF NOT EXISTS personajes (
   creado TIMESTAMPTZ NOT NULL DEFAULT now(),
   actualizado TIMESTAMPTZ,
   estado TEXT NOT NULL DEFAULT 'pendiente',
-  nombre TEXT NOT NULL,
+  nombre TEXT,
   empresa TEXT NOT NULL,
   sexo TEXT, departamento TEXT, prenda_en_color TEXT, pose TEXT, objeto TEXT,
   seleccion JSONB, accesorios JSONB, prompt TEXT NOT NULL, state JSONB
 )`);
+
+await pool.query("ALTER TABLE personajes ALTER COLUMN nombre DROP NOT NULL");
 
 const ESTADOS = ["pendiente", "generado", "descartado"];
 const TYPES = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".ico": "image/x-icon" };
@@ -62,8 +64,8 @@ async function guardar(req, res) {
   let body;
   try { body = JSON.parse(await readBody(req)); } catch (e) { return send(res, e.code === 413 ? 413 : 400, { error: "Solicitud inválida" }); }
   if (str(body.website)) return send(res, 200, { ok: true }); // campo trampa contra bots
-  const nombre = str(body.nombre, 80), empresa = str(body.empresa, 40), prompt = str(body.prompt, 6000);
-  if (!nombre || !empresa || !prompt) return send(res, 400, { error: "Faltan datos del personaje" });
+  const nombre = str(body.nombre, 80) || null, empresa = str(body.empresa, 40), prompt = str(body.prompt, 6000), departamento = str(body.departamento, 80);
+  if (!empresa || !departamento || !prompt) return send(res, 400, { error: "Faltan datos del personaje" });
   const seleccion = {};
   if (body.seleccion && typeof body.seleccion === "object")
     for (const [k, v] of Object.entries(body.seleccion).slice(0, 20)) seleccion[str(k, 40)] = str(v, 80);
@@ -72,7 +74,7 @@ async function guardar(req, res) {
   await pool.query(
     `INSERT INTO personajes (id,nombre,empresa,sexo,departamento,prenda_en_color,pose,objeto,seleccion,accesorios,prompt,state)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
-    [id, nombre, empresa, str(body.sexo, 20), str(body.departamento, 80), str(body.prendaEnColor, 20), str(body.pose, 60), str(body.objeto, 60),
+    [id, nombre, empresa, str(body.sexo, 20), departamento, str(body.prendaEnColor, 20), str(body.pose, 60), str(body.objeto, 60),
      JSON.stringify(seleccion), JSON.stringify(accesorios), prompt, body.state && typeof body.state === "object" ? JSON.stringify(body.state) : null]);
   send(res, 200, { ok: true, id });
 }

@@ -55,14 +55,14 @@ td small{color:var(--muted)}
     <div class="bar" style="margin-top:14px">
       <select id="fEmpresa"><option value="">Todas las empresas</option><option>Paguetodo</option><option>e-bCORP</option><option>Sirvalor</option></select>
       <select id="fEstado"><option value="">Todos los estados</option><option value="pendiente">Pendiente</option><option value="generado">Generado</option><option value="descartado">Descartado</option></select>
-      <input id="fTexto" type="search" placeholder="Buscar por nombre o departamento">
+      <input id="fTexto" type="search" placeholder="Buscar por departamento">
       <button type="button" id="reload">Actualizar</button>
       <button type="button" id="csv">Exportar CSV</button>
       <button type="button" id="logout">Salir</button>
     </div>
     <div id="msg" class="muted" style="margin:10px 0"></div>
     <div class="tablewrap"><table>
-      <thead><tr><th>Fecha</th><th>Nombre</th><th>Empresa</th><th>Departamento</th><th>Personaje</th><th>Estado</th><th>Acciones</th></tr></thead>
+      <thead><tr><th>Fecha</th><th>Empresa</th><th>Departamento</th><th>Sexo</th><th>Personaje</th><th>Estado</th><th>Acciones</th></tr></thead>
       <tbody id="rows"></tbody>
     </table></div>
   </div>
@@ -87,7 +87,7 @@ async function load(){
 function alertLogin(t){let p=$("login").querySelector(".err");if(!p){p=document.createElement("span");p.className="err";p.style.color="var(--bad)";$("login").appendChild(p);}p.textContent=t;}
 function filtered(){
   const e=$("fEmpresa").value, s=$("fEstado").value, q=$("fTexto").value.trim().toLowerCase();
-  return items.filter(i=>(!e||i.empresa===e)&&(!s||i.estado===s)&&(!q||(i.nombre+" "+i.departamento).toLowerCase().includes(q)));
+  return items.filter(i=>(!e||i.empresa===e)&&(!s||i.estado===s)&&(!q||(i.departamento||"").toLowerCase().includes(q)));
 }
 function resumen(i){const s=i.seleccion||{};return Object.values(s).join(" · ")+(i.accesorios&&i.accesorios.length?" · "+i.accesorios.join(", "):"");}
 function render(){
@@ -96,9 +96,9 @@ function render(){
   const list=filtered();
   $("rows").innerHTML=list.length?list.map(i=>`<tr>
     <td>${new Date(i.creado).toLocaleString("es-VE",{dateStyle:"short",timeStyle:"short"})}</td>
-    <td><b>${esc(i.nombre)}</b><br><small>${esc(i.sexo)}</small></td>
     <td><span class="co"><i style="background:${COLORS[i.empresa]||"#888"}"></i>${esc(i.empresa)}</span></td>
-    <td>${esc(i.departamento)}<br><small>${esc(i.pose)}${i.objeto&&i.objeto!=="Ninguno"?" · "+esc(i.objeto):""}</small></td>
+    <td><b>${esc(i.departamento)}</b><br><small>${esc(i.pose)}${i.objeto&&i.objeto!=="Ninguno"?" · "+esc(i.objeto):""}</small></td>
+    <td>${esc(i.sexo)}</td>
     <td style="max-width:320px"><small>${esc(resumen(i))}</small></td>
     <td><span class="pill ${esc(i.estado)}">${esc(i.estado)}</span></td>
     <td><div class="acts">
@@ -120,7 +120,7 @@ $("rows").addEventListener("click",async e=>{
     try{await api("DELETE",null,"?id="+encodeURIComponent(armed));items=items.filter(x=>x.id!==armed);armed=null;render();}catch(err){$("msg").textContent="No se pudo borrar: "+err.message;}}
 });
 $("csv").onclick=()=>{
-  const cols=["creado","nombre","empresa","sexo","departamento","resumen","prendaEnColor","pose","objeto","estado","prompt"];
+  const cols=["creado","empresa","sexo","departamento","resumen","prendaEnColor","pose","objeto","estado","prompt"];
   const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
   const lines=[cols.join(",")].concat(filtered().map(i=>cols.map(c=>q(c==="resumen"?resumen(i):i[c])).join(",")));
   const blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
