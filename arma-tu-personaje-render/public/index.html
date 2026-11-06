@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Arma tu avatar departamental</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Lexend:wght@300;400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap">
 <style>
 /* Tipografías de marca: se activan solas al subir los archivos a /public/fonts. Mientras tanto se usan Unbounded y Lexend. */
-@font-face{font-family:"Mouzambik";src:url("/fonts/Mouzambik.woff2") format("woff2"),url("/fonts/Mouzambik.otf") format("opentype"),url("/fonts/Mouzambik.ttf") format("truetype");font-weight:400 900;font-display:swap}
-@font-face{font-family:"Aceh";src:url("/fonts/Aceh-Regular.woff2") format("woff2"),url("/fonts/Aceh-Regular.otf") format("opentype"),url("/fonts/Aceh-Regular.ttf") format("truetype");font-weight:400;font-display:swap}
-@font-face{font-family:"Aceh";src:url("/fonts/Aceh-SemiBold.woff2") format("woff2"),url("/fonts/Aceh-SemiBold.otf") format("opentype"),url("/fonts/Aceh-SemiBold.ttf") format("truetype");font-weight:600;font-display:swap}
+/* Tipografía de marca: Aceh en toda la interfaz (títulos en ExtraBold). */
+@font-face{font-family:"Aceh";src:url("/fonts/Aceh-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Aceh";src:url("/fonts/Aceh-SemiBold.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Aceh";src:url("/fonts/Aceh-Bold.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Aceh";src:url("/fonts/Aceh-ExtraBold.woff2") format("woff2");font-weight:800;font-display:swap}
 
 /* Layout: panel oscuro tipo dashboard. Riel lateral de navegación; hero con el personaje y barra de resumen; columna derecha con empresa y personaje; tarjeta inferior con pestañas de cabello, outfit y accesorios. */
 :root{
@@ -19,7 +21,7 @@
   --fg:#f3f3f5; --muted:#9a9aa6; --paper:#f5f6fa; --ok:#2fb86a; --warn:#ebca0a; --bad:#ff6b6b;
   --glow:#0858ea;
   --halo:drop-shadow(0 0 .6px rgba(255,255,255,.95)) drop-shadow(0 0 1.2px rgba(255,255,255,.8)) drop-shadow(0 0 10px rgba(255,255,255,.18));
-  --f-title:"Mouzambik","Unbounded","Trebuchet MS",system-ui,sans-serif;
+  --f-title:"Aceh","Lexend",system-ui,sans-serif;
   --f-body:"Aceh","Lexend",system-ui,-apple-system,"Segoe UI",sans-serif;
   --r-xl:28px; --r-lg:22px; --r-md:16px;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
@@ -49,7 +51,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 
 .content{display:flex;flex-direction:column;gap:18px;min-width:0}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:6px 4px 0}
-.top h1{font-family:var(--f-title);font-weight:700;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.01em;margin:0;line-height:1.1}
+.top h1{font-family:var(--f-title);font-weight:800;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.01em;margin:0;line-height:1.1}
 .top .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .tools{display:flex;gap:8px}
 .iconbtn{height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);display:inline-flex;align-items:center;gap:8px;font-size:13px}
@@ -69,7 +71,7 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 .hero-copy{padding:30px 26px 140px;display:flex;flex-direction:column;gap:16px;z-index:1}
 .hero-copy .kicker{font-size:12px;color:#d8d8de;display:flex;align-items:center;gap:8px}
 .hero-copy .kicker i{width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 12px var(--glow)}
-.hero-copy h3{font-family:var(--f-title);font-weight:700;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0;letter-spacing:-.01em}
+.hero-copy h3{font-family:var(--f-title);font-weight:800;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0;letter-spacing:-.01em}
 .go{align-self:flex-start;background:#fff;color:#111;border:0;border-radius:14px;padding:14px 26px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:10px;box-shadow:0 10px 30px -10px rgba(255,255,255,.4)}
 .go:disabled{opacity:.6;cursor:default}
 .go svg{width:16px;height:16px}
@@ -85,14 +87,14 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .stagewrap{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:22px 10px 104px;z-index:1;flex:1}
 .hero-logo{height:72px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;z-index:2}
-.hero-logo img{max-height:72px;max-width:250px;width:auto;object-fit:contain;filter:var(--halo)}
-.hero-logo .wm{font-family:var(--f-title);font-weight:700;font-size:40px;color:#5fc6b3;letter-spacing:-.01em}
+.hero-logo img{max-height:80px;max-width:260px;width:auto;object-fit:contain}
+.hero-logo .wm{font-family:var(--f-title);font-weight:800;font-size:40px;color:#5fc6b3;letter-spacing:-.01em}
 .stagewrap .disc{position:absolute;bottom:100px;height:min(78%,440px);left:50%;transform:translateX(-50%);width:min(88%,350px);border-radius:999px 999px 30px 30px;background:radial-gradient(circle at 50% 35%, #fdf9f1 0, #f6eedf 60%, #eadfca 100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.55)}
 .stagewrap svg{position:relative;width:min(100%,400px);height:auto;max-width:100%;margin-bottom:-4px}
 .tag{position:absolute;top:18px;right:18px;font-size:11px;color:#e8e8ec;background:rgba(0,0,0,.35);border:1px solid var(--stroke);padding:5px 10px;border-radius:999px;z-index:2}
 .statbar{position:absolute;left:14px;right:14px;bottom:14px;z-index:3;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;
   background:rgba(20,20,24,.55);backdrop-filter:blur(18px);border:1px solid var(--stroke);border-radius:var(--r-lg);padding:16px 18px}
-.stat b{display:block;font-family:var(--f-title);font-weight:700;font-size:clamp(15px,1.8vw,21px);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat b{display:block;font-family:var(--f-title);font-weight:800;font-size:clamp(15px,1.8vw,21px);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat span{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);margin-top:4px}
 .stat span i{width:8px;height:8px;border-radius:3px}
 .stat::after{content:"";display:block;height:2px;width:60%;margin-top:8px;border-radius:2px;background:linear-gradient(90deg,var(--c,#fff),transparent)}
@@ -103,8 +105,9 @@ button:focus-visible,select:focus-visible{outline:2px solid #fff;outline-offset:
 .co{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
 .cobtn{border:1.5px solid transparent;background:var(--card2);border-radius:var(--r-md);padding:10px;display:flex;flex-direction:column;gap:8px;align-items:stretch;text-align:left;transition:.2s;min-width:0}
 .cobtn .logo{height:64px;border-radius:12px;background:transparent;display:grid;place-items:center;padding:6px 8px}
-.cobtn .logo img{max-height:46px;width:auto;object-fit:contain;filter:var(--halo)}
-.cobtn .logo .wm{white-space:nowrap;color:#5fc6b3!important;font-size:24px!important;font-family:var(--f-title);font-weight:700;font-size:15px;color:#155c5c;letter-spacing:-.01em}
+.cobtn .logo img{max-height:46px;width:auto;object-fit:contain}
+.cobtn .logo img.halo,.hero-logo img.halo{filter:var(--halo)}
+.cobtn .logo .wm{white-space:nowrap;color:#5fc6b3!important;font-size:24px!important;font-family:var(--f-title);font-weight:800;font-size:15px;color:#155c5c;letter-spacing:-.01em}
 .cobtn small{font-size:11px;color:var(--muted);line-height:1.25;padding:0 2px}
 .cobtn[aria-pressed="true"]{border-color:#fff;background:rgba(255,255,255,.14)}
 .cobtn:hover{background:rgba(255,255,255,.12)}
@@ -166,7 +169,6 @@ select option{background:#1b1b1f;color:#f3f3f5}
       <section class="card hero" id="s-hero" aria-label="Vista previa del personaje">
         <div class="stagewrap">
           <div class="hero-logo" id="heroLogo" aria-hidden="false"></div>
-          <div class="disc" aria-hidden="true"></div>
           <svg id="preview" viewBox="0 0 300 440" role="img" aria-label="Vista previa del personaje"></svg>
         </div>
         <div class="statbar">
@@ -711,7 +713,7 @@ const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
 const MAX_ACC=4;
 function flashAccLimit(){const n=document.getElementById("accCount"); if(!n) return; n.textContent=`Máximo ${MAX_ACC} accesorios: quita uno para elegir otro`; n.style.color="#ffb84d"; clearTimeout(flashAccLimit.t); flashAccLimit.t=setTimeout(()=>{n.style.color="";paintAccCount();},2200);}
 function paintAccCount(){const n=document.getElementById("accCount"); if(n) n.textContent=`${X.acc.length} de ${MAX_ACC} elegidos`; const box=document.getElementById("accRows"); if(box) box.classList.toggle("acc-full", X.acc.length>=MAX_ACC);}
-const LOGOS={paguetodo:'<img src="/logos/paguetodo.png" alt="Paguetodo">',sirvalor:'<img src="/logos/sirvalor.png" alt="Sirvalor">',ebcorp:'<span class="wm">e-bCORP</span>'};
+const LOGOS={paguetodo:'<img src="/logos/paguetodo.png" alt="Paguetodo">',sirvalor:'<img class="halo" src="/logos/sirvalor.png" alt="Sirvalor">',ebcorp:'<img src="/logos/ebcorp.png" alt="e-bCORP">'};
 function renderCompanies(){
   document.getElementById("coOpts").innerHTML=COMPANIES.map(c=>`<button type="button" class="cobtn" id="co-${c.id}" data-co="${c.id}" aria-pressed="false" aria-label="${c.name}">
     <span class="logo">${LOGOS[c.id]||c.name}</span></button>`).join("");
