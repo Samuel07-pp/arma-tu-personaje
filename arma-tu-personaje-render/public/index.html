@@ -150,6 +150,22 @@ select option{background:#fff;color:#16161a}
 .note .dot{margin-top:4px}
 .colorrow{margin-top:10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Personaje fijo mientras se personaliza */
+.grid{grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr);align-items:start}
+.hero{position:sticky;top:14px;height:calc(100vh - 28px);min-height:520px;max-height:860px}
+.hero .stagewrap{min-height:0;justify-content:center;padding:18px 10px 112px}
+.hero .stagewrap svg{width:auto;height:100%;max-height:calc(100vh - 290px);min-height:220px;max-width:100%}
+.side .row{grid-template-columns:150px minmax(0,1fr)}
+@media (max-width:1180px){.side .row{grid-template-columns:1fr;gap:10px}}
+@media (max-width:980px){
+  .grid{grid-template-columns:1fr}
+  .hero{top:0;z-index:20;height:auto;min-height:0;max-height:none;border-radius:0 0 22px 22px;margin:0 -12px;box-shadow:0 14px 30px -20px rgba(20,24,40,.35)}
+  .hero .stagewrap{padding:10px 10px 8px;flex-direction:row;gap:12px;align-items:center;justify-content:center;min-height:0}
+  .hero .stagewrap svg{height:34vh;max-height:300px;min-height:180px;width:auto;margin:0}
+  .hero .hero-logo{position:absolute;top:10px;left:14px;height:auto;margin:0}
+  .hero .hero-logo img{max-height:34px;max-width:110px}
+  .hero .statbar{display:none}
+}
 </style>
 </head>
 <body>
@@ -196,6 +212,35 @@ select option{background:#fff;color:#16161a}
             <label for="prop">Objeto en la mano<select id="prop"></select></label>
           </div>
         </section>
+
+        <section class="card" id="s-tabs" aria-label="Personalización">
+          <div class="tabs">
+            <h2 id="s-cab">Personaliza</h2>
+            <div class="tabbar" role="tablist">
+              <button type="button" role="tab" id="t-hair" aria-selected="true" data-tab="hair"><span class="ti" data-i="hair"></span>Cabello</button>
+              <button type="button" role="tab" id="t-out" aria-selected="false" data-tab="out"><span class="ti" data-i="out"></span>Outfit</button>
+              <button type="button" role="tab" id="t-acc" aria-selected="false" data-tab="acc"><span class="ti" data-i="acc"></span>Accesorios</button>
+            </div>
+          </div>
+          <div class="panel" id="p-hair" role="tabpanel"><div id="hairRows" class="rows"></div></div>
+          <div class="panel" id="p-out" role="tabpanel" hidden>
+            <div id="outRows" class="rows"></div>
+            <div class="rows colorrow"><div class="row"><div class="rowhead"><span class="ri" id="colorIco"></span><span class="rt">Prenda en color<em id="colorHint"></em></span></div>
+              <div class="chips"><div class="seg" id="colorSeg"><button type="button" id="c-top" data-color="top">Superior</button><button type="button" id="c-bottom" data-color="bottom">Inferior</button><button type="button" id="c-both" data-color="both">Ambas</button></div></div></div></div>
+          </div>
+          <div class="panel" id="p-acc" role="tabpanel" hidden>
+            <div id="accRows" class="rows"></div>
+            <div class="note"><i class="dot" id="noteDot"></i><span id="noteTxt"></span></div>
+          </div>
+        </section>
+
+        <section class="card cta" aria-label="Generar personaje">
+          <form class="confirm" id="confirmBox" data-state="idle" novalidate>
+            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+            <button class="go" id="confirmBtn" type="submit"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Generar personaje</button>
+            <span class="cmsg" id="confirmMsg">Cuando termines de combinar, pulsa Generar personaje para registrarlo en tu departamento.</span>
+          </form>
+        </section>
         <section class="card" aria-label="Paleta del personaje">
           <h2>Paleta</h2>
           <div class="legend">
@@ -207,34 +252,6 @@ select option{background:#fff;color:#16161a}
       </div>
     </div>
 
-    <section class="card" id="s-tabs" aria-label="Personalización">
-      <div class="tabs">
-        <h2 id="s-cab">Personaliza</h2>
-        <div class="tabbar" role="tablist">
-          <button type="button" role="tab" id="t-hair" aria-selected="true" data-tab="hair"><span class="ti" data-i="hair"></span>Cabello</button>
-          <button type="button" role="tab" id="t-out" aria-selected="false" data-tab="out"><span class="ti" data-i="out"></span>Outfit</button>
-          <button type="button" role="tab" id="t-acc" aria-selected="false" data-tab="acc"><span class="ti" data-i="acc"></span>Accesorios</button>
-        </div>
-      </div>
-      <div class="panel" id="p-hair" role="tabpanel"><div id="hairRows" class="rows"></div></div>
-      <div class="panel" id="p-out" role="tabpanel" hidden>
-        <div id="outRows" class="rows"></div>
-        <div class="rows colorrow"><div class="row"><div class="rowhead"><span class="ri" id="colorIco"></span><span class="rt">Prenda en color<em id="colorHint"></em></span></div>
-          <div class="chips"><div class="seg" id="colorSeg"><button type="button" id="c-top" data-color="top">Superior</button><button type="button" id="c-bottom" data-color="bottom">Inferior</button><button type="button" id="c-both" data-color="both">Ambas</button></div></div></div></div>
-      </div>
-      <div class="panel" id="p-acc" role="tabpanel" hidden>
-        <div id="accRows" class="rows"></div>
-        <div class="note"><i class="dot" id="noteDot"></i><span id="noteTxt"></span></div>
-      </div>
-    </section>
-
-    <section class="card cta" aria-label="Generar personaje">
-      <form class="confirm" id="confirmBox" data-state="idle" novalidate>
-        <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-        <button class="go" id="confirmBtn" type="submit"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Generar personaje</button>
-        <span class="cmsg" id="confirmMsg">Cuando termines de combinar, pulsa Generar personaje para registrarlo en tu departamento.</span>
-      </form>
-    </section>
   </main>
  </div>
 </div>
