@@ -267,7 +267,7 @@ const COMPANIES=[
  {id:"paguetodo",name:"Paguetodo",desc:"Fintech de pagos y PaguePOS",
   mass:"#0858ea",line:"#0b1633",hair:"#0b1633",accent:"#ebca0a",alt:"#0b1633",
   massName:"azul", hairName:"navy", accentName:"amarillo", firm:"a fintech company", defColor:"auto",
-  depts:[["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["comercial","Comercial","Commercial"],["marketing","Mercadeo","Marketing"],
+  depts:[["finanzas","Finanzas","Finance"],["ventas","Ventas","Sales"],["comercial","Comercial","Commercial"],
          ["desarrollo","Desarrollo y sistemas","Development and Systems"],["atencion","Atención al cliente","Customer Service"],["soporte","Soporte técnico","Technical Support"],["operaciones","Operaciones","Operations"]],
   props:["factura","recibo","calculadora","tablet","maletin","llave","portapapeles","laptop","taza","celular"]},
  {id:"ebcorp",name:"e-bCORP",desc:"Consultora SAP SuccessFactors",
@@ -283,7 +283,7 @@ const COMPANIES=[
   props:["tabletcheck","portapapeles","carpeta","laptopab","celular","maletin"]}
 ];
 const DEPT_PROP={
-  "paguetodo:finanzas":"factura","paguetodo:ventas":"recibo","paguetodo:comercial":"maletin","paguetodo:marketing":"tablet",
+  "paguetodo:finanzas":"factura","paguetodo:ventas":"recibo","paguetodo:comercial":"maletin",
   "paguetodo:desarrollo":"laptop","paguetodo:atencion":"celular","paguetodo:soporte":"llave","paguetodo:operaciones":"portapapeles",
   "ebcorp:junta":"portafolio","ebcorp:rrhh":"carpeta","ebcorp:sap":"laptopab","ebcorp:finanzas":"calculadora","ebcorp:ventas":"portapapeles","ebcorp:marketing":"celular",
   "sirvalor:servicios":"tabletcheck"};
@@ -399,7 +399,23 @@ const POSES=[
   {id:"cadera",name:"Mano en la cadera",en:"Full body, standing, relaxed three-quarter stance with one hand on {pr} hip"},
   {id:"camina",name:"Caminando al frente",en:"Full body, caught mid-stride walking toward the viewer with energy, a couple of small motion lines at {pr} feet"},
   {id:"brazos",name:"Brazos cruzados",en:"Full body, standing straight facing the viewer with a confident posture"},
-  {id:"saluda",name:"Saludando",en:"Full body, standing in a relaxed three-quarter pose"}];
+  {id:"saluda",name:"Saludando",en:"Full body, standing in a relaxed three-quarter pose"},
+  {id:"pensando",name:"Pensativo",en:"Full body, standing in a relaxed three-quarter pose, head slightly tilted with a curious thoughtful expression",
+    wp:"one hand resting on {pr} chin, the other hand {p}",np:"one hand resting on {pr} chin, the other arm folded across {pr} waist"},
+  {id:"senala",name:"Señalando a un lado",en:"Full body, standing in a confident three-quarter pose",
+    wp:"one arm extended pointing to the side with the index finger as if presenting an idea, the other hand {p}",np:"one arm extended pointing to the side with the index finger, the other hand on {pr} hip"},
+  {id:"pulgar",name:"Pulgar arriba",en:"Full body, standing facing the viewer with a big cheerful grin",
+    wp:"one hand giving a confident thumbs-up, the other hand {p}",np:"one hand giving a confident thumbs-up, the other arm relaxed at {pr} side"},
+  {id:"bolsillo",name:"Mano en el bolsillo",en:"Full body, standing in a casual relaxed three-quarter stance with the weight on one leg",
+    wp:"one hand tucked in {pr} pocket, the other hand {p}",np:"both hands tucked in {pr} pockets"},
+  {id:"presenta",name:"Presentando",en:"Full body, standing in a welcoming open three-quarter pose",
+    wp:"one arm open with the palm up in a welcoming presenting gesture, the other hand {p}",np:"both arms open with the palms up in a welcoming gesture"},
+  {id:"celebra",name:"Celebrando",en:"Full body, energetic celebrating pose with one knee slightly lifted and a joyful open smile",
+    wp:"one fist pumped up in the air, the other hand {p}",np:"both fists pumped up in the air"},
+  {id:"recostado",name:"Recostado",en:"Full body, leaning casually with one shoulder against an implied wall, ankles crossed",
+    wp:"one hand in {pr} pocket, the other hand {p}",np:"arms relaxed with one hand in {pr} pocket"},
+  {id:"sentado",name:"Sentado",en:"Full body, sitting casually on a simple white stool drawn in the same line style, one leg crossed over the other",
+    wp:"one hand resting on {pr} knee, the other hand {p}",np:"both hands resting on {pr} knee"}];
 
 /* ---------- Estado ---------- */
 const DEF={sex:"f",company:"paguetodo",color:"top",dept:"comercial",pose:"cadera",prop:"tablet",
@@ -411,7 +427,9 @@ const clone=o=>JSON.parse(JSON.stringify(o));
 let st=load();
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.f&&s.m){const d=clone(DEF);Object.assign(d,s);d.f=Object.assign(clone(DEF.f),s.f);d.m=Object.assign(clone(DEF.m),s.m);return clean(d);}}catch(e){}return clone(DEF);}
 function clean(d){["f","m"].forEach(k=>{const o=OPT[k];["len","style","bangs","type","face","top","bottom","shoes"].forEach(g=>{if(o[g]&&!o[g].some(x=>x.id===d[k][g])) d[k][g]=DEF[k][g];});
-  d[k].acc=(d[k].acc||[]).filter(a=>o.acc.some(x=>x.id===a));});return d;}
+  d[k].acc=(d[k].acc||[]).filter(a=>o.acc.some(x=>x.id===a));});
+  const C=COMPANIES.find(c=>c.id===d.company)||COMPANIES[0]; if(!C.depts.some(x=>x[0]===d.dept)) d.dept=C.depts[0][0];
+  if(!POSES.some(x=>x.id===d.pose)) d.pose=DEF.pose; return d;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
 ["f","m"].forEach(k=>{st[k].acc=(st[k].acc||[]).slice(0,4);});
 let X=st[st.sex];
@@ -776,7 +794,9 @@ function buildPrompt(){
   if(M){const f=find("face",X.face); faceBits.splice(0,0,f.id==="sin"?"clean-shaven":`${f.en} as a solid mass`);}
   const face=faceBits.concat(acc).join(", ");
   let action;
-  if(propEn){
+  if(pose.wp){
+    action = `${pen}, `+(propEn? pose.wp.replace("{p}",propEn) : pose.np).replace(/\{pr\}/g,pr);
+  } else if(propEn){
     action = st.pose==="brazos" ? `${pen}, ${propEn} close to ${pr} chest` :
              st.pose==="camina" ? `${pen}, ${propEn}` :
              st.pose==="saluda" ? `${pen}, one hand raised in a friendly wave, the other hand ${propEn}` : `${pen}, the other hand ${propEn}`;
