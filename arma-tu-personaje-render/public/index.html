@@ -114,6 +114,10 @@ button:focus-visible,select:focus-visible{outline:2px solid #16161a;outline-offs
 .seg button{border:0;background:transparent;color:var(--muted);padding:8px 16px;border-radius:999px;font-size:13px;font-weight:500}
 .seg button[aria-pressed="true"]{background:#111114;color:#fff}
 .fields{display:grid;gap:10px;margin-top:14px}
+.autoprop{display:flex;flex-direction:column;gap:6px}
+.autoprop .lbl{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.autoprop .val{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:var(--card2);border:1px dashed rgba(17,17,24,.14);border-radius:12px;padding:11px 14px;font-size:14px;color:var(--fg)}
+.autoprop .val b{font-weight:600}.autoprop em{font-style:normal;font-size:11.5px;color:var(--muted)}
 label{display:flex;flex-direction:column;gap:6px;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 select{font:inherit;font-size:14px;text-transform:none;letter-spacing:0;color:var(--fg);background:#f6f7f9 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%236e6e78' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 14px center;
   border:1px solid var(--stroke);border-radius:14px;padding:12px 38px 12px 14px;width:100%;appearance:none}
@@ -209,7 +213,7 @@ select option{background:#fff;color:#16161a}
           <div class="fields">
             <label for="dept">Departamento<select id="dept"></select></label>
             <label for="pose">Pose<select id="pose"></select></label>
-            <label for="prop">Objeto en la mano<select id="prop"></select></label>
+            <div class="autoprop"><span class="lbl">Objeto en la mano</span><span class="val"><b id="propName">—</b><em>según el departamento</em></span></div>
           </div>
         </section>
 
@@ -278,6 +282,12 @@ const COMPANIES=[
   depts:[["servicios","Gerencia de servicios","Services Management (Gerencia de servicios)"]],
   props:["tabletcheck","portapapeles","carpeta","laptopab","celular","maletin"]}
 ];
+const DEPT_PROP={
+  "paguetodo:finanzas":"factura","paguetodo:ventas":"recibo","paguetodo:comercial":"maletin","paguetodo:marketing":"tablet",
+  "paguetodo:desarrollo":"laptop","paguetodo:atencion":"celular","paguetodo:soporte":"llave","paguetodo:operaciones":"portapapeles",
+  "ebcorp:junta":"portafolio","ebcorp:rrhh":"carpeta","ebcorp:sap":"laptopab","ebcorp:finanzas":"calculadora","ebcorp:ventas":"portapapeles","ebcorp:marketing":"celular",
+  "sirvalor:servicios":"tabletcheck"};
+function syncProp(){st.prop=DEPT_PROP[st.company+":"+st.dept]||"none";}
 const PROPS={
   none:{name:"Ninguno",en:"",short:""},
   factura:{name:"Factura",en:"holding up a single paper invoice sheet with a small zigzag torn bottom edge and a few short lines suggesting rows and a total, no readable text",short:"the invoice"},
@@ -303,8 +313,7 @@ const BOTTOMS=[
   {id:"ejecutivo",name:"Pantalón ejecutivo",en:"tailored straight executive trousers with a center crease",cName:"the executive trousers",word:"trousers"},
   {id:"sport",name:"Pantalón sport",en:"sporty jogger trousers with elastic ankle cuffs and a thin side stripe",cName:"the jogger trousers",word:"joggers"},
   {id:"cargo",name:"Jean cargo",en:"loose cargo jeans with large flap pockets on the side of the thighs",cName:"the cargo jeans",word:"jeans"},
-  {id:"jean",name:"Jean recto",en:"classic straight-leg jeans with visible stitching and rolled-up cuffs",cName:"the jeans",word:"jeans"},
-  {id:"bermuda",name:"Bermuda",en:"knee-length tailored bermuda shorts",cName:"the bermuda shorts",word:"shorts"}];
+  {id:"jean",name:"Jean recto",en:"classic straight-leg jeans with visible stitching and rolled-up cuffs",cName:"the jeans",word:"jeans"}];
 const OPT={
  f:{
   len:[{id:"largo",name:"Largo",en:"long"},{id:"medio",name:"Medio",en:"shoulder-length"},{id:"corto",name:"Corto",en:"short"}],
@@ -323,7 +332,7 @@ const OPT={
     {id:"sueter",name:"Suéter cuello alto",en:"a fitted ribbed turtleneck sweater",cName:"the turtleneck sweater",auto:"top"},
     {id:"cuadros",name:"Camisa a cuadros",en:"an open plaid flannel overshirt over a plain white t-shirt",cName:"the plaid overshirt",auto:"top"},
     {id:"bomber",name:"Bomber",en:"a bomber jacket with ribbed collar, cuffs and hem, worn open over a white t-shirt",cName:"the bomber jacket",auto:"top"}],
-  bottom:[BOTTOMS[0],{id:"falda",name:"Falda",en:"a knee-length A-line skirt",cName:"the skirt",word:"skirt"},{id:"faldalarga",name:"Falda larga plisada",en:"a pleated midi skirt reaching mid-calf",cName:"the pleated skirt",word:"skirt"},BOTTOMS[1],BOTTOMS[2],BOTTOMS[3],BOTTOMS[4],BOTTOMS[5],BOTTOMS[6]],
+  bottom:[BOTTOMS[0],{id:"falda",name:"Falda",en:"a knee-length A-line skirt",cName:"the skirt",word:"skirt"},{id:"faldalarga",name:"Falda larga plisada",en:"a pleated midi skirt reaching mid-calf",cName:"the pleated skirt",word:"skirt"},BOTTOMS[1],BOTTOMS[2],BOTTOMS[3],BOTTOMS[4],BOTTOMS[5]],
   shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"tacones",name:"Tacones",en:"pointed-toe heels"},{id:"casuales",name:"Casuales",en:"simple ballet flats"},{id:"formales",name:"Formales",en:"polished formal loafers"},{id:"botines",name:"Botines",en:"ankle boots with a small block heel"},{id:"botas",name:"Botas",en:"chunky lace-up leather boots"}],
   acc:[
     {id:"lentes",name:"Lentes",en:"large round thin-rimmed glasses"},
@@ -338,7 +347,6 @@ const OPT={
     {id:"gorro",name:"Gorro",en:"a knit beanie"},
     {id:"pulseras",name:"Pulseras",en:"a few thin bracelets on one wrist",acc:"one bracelet"},
     {id:"piercing",name:"Piercing",en:"a small eyebrow piercing",acc:"the piercing"},
-    {id:"tatuajes",name:"Tatuajes",en:"a small simple line-art tattoo on the forearm"},
     {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"},
     {id:"bufanda",name:"Bufanda",en:"a soft knit scarf loosely wrapped around the neck",acc:"the scarf"},
     {id:"bandolera",name:"Bandolera",en:"a small crossbody bag on a thin strap",acc:"the crossbody bag"},
@@ -374,7 +382,6 @@ const OPT={
     {id:"pulseras",name:"Pulseras",en:"a few thin bracelets on one wrist",acc:"one bracelet"},
     {id:"piercing",name:"Piercing",en:"a small eyebrow piercing",acc:"the piercing"},
     {id:"lentes",name:"Lentes",en:"thin-rimmed glasses"},
-    {id:"tatuajes",name:"Tatuajes",en:"a small simple line-art tattoo on the forearm"},
     {id:"audifonos",name:"Audífonos",en:"big over-ear headphones resting around the neck"},
     {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"},
     {id:"reloj",name:"Reloj",en:"a sporty wristwatch",acc:"the watch face"},
@@ -402,7 +409,9 @@ DEF.m.acc=["pulseras"];
 const KEY="arma-personaje-v4";
 const clone=o=>JSON.parse(JSON.stringify(o));
 let st=load();
-function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.f&&s.m){const d=clone(DEF);Object.assign(d,s);d.f=Object.assign(clone(DEF.f),s.f);d.m=Object.assign(clone(DEF.m),s.m);return d;}}catch(e){}return clone(DEF);}
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.f&&s.m){const d=clone(DEF);Object.assign(d,s);d.f=Object.assign(clone(DEF.f),s.f);d.m=Object.assign(clone(DEF.m),s.m);return clean(d);}}catch(e){}return clone(DEF);}
+function clean(d){["f","m"].forEach(k=>{const o=OPT[k];["len","style","bangs","type","face","top","bottom","shoes"].forEach(g=>{if(o[g]&&!o[g].some(x=>x.id===d[k][g])) d[k][g]=DEF[k][g];});
+  d[k].acc=(d[k].acc||[]).filter(a=>o.acc.some(x=>x.id===a));});return d;}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
 ["f","m"].forEach(k=>{st[k].acc=(st[k].acc||[]).slice(0,4);});
 let X=st[st.sex];
@@ -835,11 +844,11 @@ function renderRows(){
 function renderCompanyLists(){
   const C=co();
   document.getElementById("dept").innerHTML=C.depts.map(d=>`<option value="${d[0]}">${d[1]}</option>`).join("");
-  document.getElementById("prop").innerHTML=["none"].concat(C.props).map(id=>`<option value="${id}">${PROPS[id].name}</option>`).join("");
   document.getElementById("pose").innerHTML=POSES.map(o=>`<option value="${o.id}">${o.name}</option>`).join("");
 }
 function render(){
-  X=st[st.sex];
+  X=st[st.sex]; syncProp();
+  document.getElementById("propName").textContent=(PROPS[st.prop]||PROPS.none).name;
   const C=co();
   document.getElementById("preview").innerHTML=charSVG();
   document.querySelectorAll("[data-co]").forEach(b=>b.setAttribute("aria-pressed", st.company===b.dataset.co));
@@ -848,7 +857,7 @@ function render(){
   const styleDisabled = male() && X.len==="rapado";
   document.querySelectorAll('[data-g="style"]').forEach(b=>b.disabled=styleDisabled);
   document.querySelectorAll("[data-color]").forEach(b=>b.setAttribute("aria-pressed", st.color===b.dataset.color));
-  ["dept","pose","prop"].forEach(k=>{document.getElementById(k).value=st[k];});
+  ["dept","pose"].forEach(k=>{document.getElementById(k).value=st[k];});
   const top=find("top",X.top), bot=find("bottom",X.bottom);
   const what = st.color==="both"?`${top.name.toLowerCase()} y ${bot.name.toLowerCase()}`:(st.color==="top"?top.name.toLowerCase():bot.name.toLowerCase());
   document.getElementById("lgMassDot").style.background=C.mass; document.getElementById("lgMass").textContent=`${cap(C.massName)}: ${what}`;
@@ -905,7 +914,7 @@ document.addEventListener("click",e=>{
     render(); return;}
   const cl=e.target.closest("[data-color]"); if(cl){st.color=cl.dataset.color;render();}
 });
-["dept","pose","prop"].forEach(k=>document.getElementById(k).addEventListener("change",ev=>{st[k]=ev.target.value;render();}));
+["dept","pose"].forEach(k=>document.getElementById(k).addEventListener("change",ev=>{st[k]=ev.target.value;render();}));
 document.getElementById("reset").onclick=()=>{const sx=st.sex;st=clone(DEF);st.sex=sx;X=st[sx];renderRows();renderCompanyLists();render();};
 document.getElementById("rnd").onclick=()=>{
   const pick=a=>a[Math.floor(Math.random()*a.length)];
