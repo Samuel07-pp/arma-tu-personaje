@@ -337,9 +337,9 @@ const BOTTOMS=[
 const OPT={
  f:{
   len:[{id:"largo",name:"Largo",en:"long"},{id:"medio",name:"Medio",en:"shoulder-length"},{id:"corto",name:"Corto",en:"short"}],
-  style:[{id:"suelto",name:"Suelto"},{id:"mediacola",name:"Media cola"},{id:"unacola",name:"Una cola"},{id:"doscolas",name:"Dos colas"},{id:"recogido",name:"Recogido"},{id:"dosmonos",name:"Dos moños"}],
-  bangs:[{id:"none",name:"Sin pollina",en:""},{id:"larga",name:"Pollina larga",en:"long straight-cut bangs down to the eyebrows"},{id:"corta",name:"Pollina corta",en:"short baby bangs"},{id:"lado",name:"Pollina de lado",en:"side-swept bangs"}],
-  type:[{id:"liso",name:"Liso",en:"sleek straight"},{id:"ondulado",name:"Ondulado",en:"wavy"},{id:"rizado",name:"Rizado",en:"curly"}],
+  style:[{id:"suelto",name:"Suelto"},{id:"mediacola",name:"Media cola"},{id:"unacola",name:"Una cola"},{id:"doscolas",name:"Dos colas"},{id:"recogido",name:"Recogido"},{id:"dosmonos",name:"Dos moños"},{id:"mediomono",name:"Medio moño"},{id:"colabaja",name:"Cola baja de lado"},{id:"trenza",name:"Trenza"},{id:"dostrenzas",name:"Dos trenzas"},{id:"bob",name:"Bob"},{id:"pixie",name:"Pixie"},{id:"afro",name:"Afro"}],
+  bangs:[{id:"none",name:"Sin pollina",en:""},{id:"larga",name:"Pollina larga",en:"long straight-cut bangs down to the eyebrows"},{id:"corta",name:"Pollina corta",en:"short baby bangs"},{id:"lado",name:"Pollina de lado",en:"side-swept bangs"},{id:"cortina",name:"Pollina cortina",en:"curtain bangs parted in the middle"}],
+  type:[{id:"liso",name:"Liso",en:"sleek straight"},{id:"ondulado",name:"Ondulado",en:"wavy"},{id:"rizado",name:"Rizado",en:"curly"},{id:"afro",name:"Crespo afro",en:"tightly coiled afro-textured"}],
   top:[
     {id:"oversize",name:"Oversize",en:"an oversized t-shirt with dropped shoulders",cName:"the oversized t-shirt",auto:"bottom"},
     {id:"blusa",name:"Blusa",en:"a long-sleeve blouse with buttoned cuffs and a small bow at the neckline",cName:"the blouse",auto:"bottom"},
@@ -374,11 +374,11 @@ const OPT={
   accOrder:["panoleta","collar","reloj","aretes","pulseras","piercing","cintillo","bandolera","bufanda"]
  },
  m:{
-  len:[{id:"rapado",name:"Rapado"},{id:"fadealto",name:"Fade alto"},{id:"fadebajo",name:"Fade bajo"},{id:"corto",name:"Corto"},{id:"largo",name:"Largo"}],
-  style:[{id:"lado",name:"De lado"},{id:"mullet",name:"Mullet"},{id:"librito",name:"Librito"},{id:"atras",name:"Hacia atrás"},{id:"cola",name:"Con cola"},{id:"mediacola",name:"Media cola"},{id:"adelante",name:"Hacia adelante"}],
-  type:[{id:"liso",name:"Liso",en:"straight"},{id:"ondulado",name:"Ondulado",en:"wavy"},{id:"rizado",name:"Rizado",en:"curly"}],
+  len:[{id:"rapado",name:"Rapado"},{id:"fadealto",name:"Fade alto"},{id:"fadebajo",name:"Fade bajo"},{id:"corto",name:"Corto"},{id:"medio",name:"Medio"},{id:"largo",name:"Largo"}],
+  style:[{id:"lado",name:"De lado"},{id:"mullet",name:"Mullet"},{id:"librito",name:"Librito"},{id:"atras",name:"Hacia atrás"},{id:"cola",name:"Con cola"},{id:"mediacola",name:"Media cola"},{id:"adelante",name:"Hacia adelante"},{id:"raya",name:"Raya marcada"},{id:"copete",name:"Copete"},{id:"cresta",name:"Cresta"},{id:"despeinado",name:"Despeinado"},{id:"trenzas",name:"Trenzas pegadas"},{id:"afro",name:"Afro"}],
+  type:[{id:"liso",name:"Liso",en:"straight"},{id:"ondulado",name:"Ondulado",en:"wavy"},{id:"rizado",name:"Rizado",en:"curly"},{id:"afro",name:"Crespo afro",en:"tightly coiled afro-textured"}],
   face:[{id:"sin",name:"Sin barba",en:"clean-shaven"},{id:"barba",name:"Con barba",en:"a neat short full beard"},{id:"bigote",name:"Bigote",en:"a thick mustache"},
-        {id:"perilla",name:"Perilla",en:"a small goatee"},{id:"patillas",name:"Patillas",en:"long sideburns"},{id:"candado",name:"Candado",en:"a circle beard with the mustache connected to a goatee"}],
+        {id:"perilla",name:"Perilla",en:"a small goatee"},{id:"patillas",name:"Patillas",en:"long sideburns"},{id:"candado",name:"Candado",en:"a circle beard with the mustache connected to a goatee"},{id:"sombra",name:"Barba de 3 días",en:"light even stubble"},{id:"barbalarga",name:"Barba larga",en:"a long full beard with a mustache"},{id:"herradura",name:"Bigote herradura",en:"a horseshoe mustache running down to the jawline"},{id:"manubrio",name:"Bigote manubrio",en:"a handlebar mustache with curled tips"},{id:"barbabigote",name:"Barba corta y bigote grueso",en:"a short boxed beard with a thick mustache"}],
   top:[
     {id:"oversize",name:"Oversize",en:"an oversized t-shirt with dropped shoulders",cName:"the oversized t-shirt",auto:"bottom"},
     {id:"jacket",name:"Jacket",en:"a casual zip-up jacket worn open over a plain white t-shirt",cName:"the jacket",auto:"top"},
@@ -412,7 +412,7 @@ const OPT={
  }
 };
 const ROWS={
- f:{hair:[["len","Largo"],["style","Estilo"],["bangs","Pollina","combínala con cualquier estilo"],["type","Tipo"]],out:[["top","Parte superior"],["bottom","Parte inferior"],["shoes","Zapatos"]]},
+ f:{hair:[["len","Largo"],["style","Estilo","bob y pixie tienen su propio largo"],["bangs","Pollina","combínala con cualquier estilo"],["type","Tipo"]],out:[["top","Parte superior"],["bottom","Parte inferior"],["shoes","Zapatos"]]},
  m:{hair:[["len","Cabello"],["style","Estilo","el rapado no lleva estilo"],["type","Tipo"],["face","Rostro"]],out:[["top","Parte superior"],["bottom","Parte inferior"],["shoes","Zapatos"]]}
 };
 const POSES=[
@@ -469,6 +469,9 @@ function setPal(){const c=co();LINE=c.line;HAIR=c.id==="ebcorp"?"#0c3e3e":c.hair
   HS=HAIR; HC="";}
 
 /* ---------- Utilidades de cabello ---------- */
+const htype=()=>X.type==="afro"?"rizado":X.type;
+function braid(p0,p1,p2,w){let s="";for(let i=0;i<=9;i++){const t=i/9,c=qpt(p0,p1,p2,t),d=qtan(p0,p1,p2,t),a=Math.atan2(d[1],d[0])*180/Math.PI;const ww=w*(1-0.35*t);s+=`<ellipse cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" rx="${(ww*0.62).toFixed(1)}" ry="${(ww*0.5).toFixed(1)}" transform="rotate(${(a+90).toFixed(0)} ${c[0].toFixed(1)} ${c[1].toFixed(1)})" fill="${HAIR}" stroke="${HS}" stroke-width="2"/>`;}const e=qpt(p0,p1,p2,1);return s+tie(e[0],e[1]+4,0);}
+
 function qpt(p0,p1,p2,t){const u=1-t;return [u*u*p0[0]+2*u*t*p1[0]+t*t*p2[0], u*u*p0[1]+2*u*t*p1[1]+t*t*p2[1]];}
 function qtan(p0,p1,p2,t){const u=1-t;let x=2*u*(p1[0]-p0[0])+2*t*(p2[0]-p1[0]),y=2*u*(p1[1]-p0[1])+2*t*(p2[1]-p1[1]);const l=Math.hypot(x,y)||1;return [x/l,y/l];}
 function tail(p0,p1,p2,w0,type,flip,loose){
@@ -503,10 +506,15 @@ function curlEdge(){let s="";[[122,98],[123,86],[129,75],[139,68],[150,66],[161,
 const LIF={corto:0,medio:1,largo:2};
 function fLooseLen(){return [40,82,140][LIF[X.len]];}
 function fHairBack(){
-  const L=LIF[X.len], T=X.type;
+  const L=LIF[X.len], T=htype();
   if(X.style==="unacola") return tail([160,64],[236,30],[222,64+[60,115,175][L]],[22,28,34][L],T,false)+tie(162,66,-25);
   if(X.style==="recogido"){const r=[13,17,22][L];return bun(150,60-r*0.5,r,T);}
   if(X.style==="dosmonos"){const r=[11,14,17][L];return bun(124,62,r,T)+bun(176,62,r,T);}
+  if(X.style==="afro"){let a=`<circle cx="150" cy="86" r="${[40,46,52][L]}" fill="${HAIR}"${HC}/>`;const R=[40,46,52][L];for(let k=0;k<16;k++){const t=k/16*Math.PI*2;a+=`<circle cx="${(150+Math.cos(t)*R).toFixed(1)}" cy="${(86+Math.sin(t)*R).toFixed(1)}" r="8" fill="${HAIR}"${HC}/>`;}return a;}
+  if(X.style==="bob") return `<path d="M118 86 L182 86 L184 128 Q150 138 116 128 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  if(X.style==="pixie") return "";
+  if(X.style==="mediomono"){const Y=80+fLooseLen()*0.9;return `<path d="M120 86 L180 86 L182 ${Y} L118 ${Y} Z" fill="${HAIR}"/>`+bun(150,56,12,T);}
+  if(X.style==="trenza"||X.style==="dostrenzas"||X.style==="colabaja") return `<path d="M122 86 L178 86 L178 112 L122 112 Z" fill="${HAIR}"/>`;
   if(X.style==="suelto"||X.style==="mediacola"){
     const Y=80+fLooseLen()*0.9;
     let s=`<path d="M120 86 L180 86 L182 ${Y} L118 ${Y} Z" fill="${HAIR}"/>`;
@@ -516,27 +524,35 @@ function fHairBack(){
   return "";
 }
 function fHairSides(){
-  const L=LIF[X.len], T=X.type;
+  const L=LIF[X.len], T=htype();
   if(X.style==="doscolas"){const len=[38,82,140][L], w=[20,24,28][L];
     return tail([124,86],[96,96],[102,86+len],w,T,false)+tail([176,86],[204,96],[198,86+len],w,T,true)+tie(123,86,20)+tie(177,86,-20);}
+  const blen=[40,82,130][L];
+  if(X.style==="trenza") return braid([126,96],[112,130],[118,96+blen],20);
+  if(X.style==="dostrenzas") return braid([126,96],[112,130],[116,96+blen],18)+braid([174,96],[188,130],[184,96+blen],18);
+  if(X.style==="colabaja") return tail([170,104],[192,126],[184,104+blen],[20,24,28][L],T,true,false)+tie(172,108,30);
+  if(X.style==="bob") return tail([124,82],[114,102],[118,128],22,T,false,true)+tail([176,82],[186,102],[182,128],22,T,true,true);
+  if(X.style==="mediomono"){const len=fLooseLen();return tail([124,82],[110,104],[113,82+len],22,T,false,true)+tail([176,82],[190,104],[187,82+len],22,T,true,true);}
   if(X.style==="suelto"||X.style==="mediacola"){const len=fLooseLen(), w=X.style==="suelto"?[22,24,26][L]:[18,20,22][L];
     return tail([124,82],[110,104],[113,82+len],w,T,false,true)+tail([176,82],[190,104],[187,82+len],w,T,true,true);}
   return "";
 }
 function fHairCap(){
-  const T=X.type;
-  let s=`<path d="${capPath(104)}" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  const T=htype();
+  let s=`<path d="${capPath(X.style==="pixie"?96:104)}" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  if(X.style==="pixie") s+=`<path d="M121 96 L127 94 L127 108 L122 107 Z M179 96 L173 94 L173 108 L178 107 Z" fill="${HAIR}"/>`;
   if(T==="rizado"){s+=curlEdge(); if(X.bangs==="none") s+=`<circle cx="138" cy="80" r="5" fill="${HAIR}"/><circle cx="150" cy="78" r="5" fill="${HAIR}"/><circle cx="162" cy="80" r="5" fill="${HAIR}"/>`;}
   else if(T==="ondulado" && X.style!=="suelto" && X.style!=="mediacola") s+=`<path d="M123 96 q-6 8 0 14 q4 6 -1 12 M177 96 q6 8 0 14 q-4 6 1 12" fill="none" stroke="${HAIR}" stroke-width="3" stroke-linecap="round"/>`;
   else if(T==="liso" && X.bangs==="none") s+=`<path d="M142 66 Q146 72 140 80" fill="none" stroke="${WHITE}" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>`;
   return s+fBangs();
 }
 function fBangs(){
-  const b=X.bangs, T=X.type; if(b==="none") return "";
+  const b=X.bangs, T=htype(); if(b==="none") return "";
   let s, bottom=b==="larga"?88:80;
-  if(b==="lado") s=`<path d="M122 100 C122 74 136 66 152 66 C168 66 178 76 178 92 C168 82 150 82 126 98 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  if(b==="cortina") s=`<path d="M150 66 C136 66 122 74 122 100 C126 88 136 80 150 74 Z M150 66 C164 66 178 74 178 100 C174 88 164 80 150 74 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  else if(b==="lado") s=`<path d="M122 100 C122 74 136 66 152 66 C168 66 178 76 178 92 C168 82 150 82 126 98 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
   else s=`<path d="M122 ${bottom+6} C122 72 136 66 150 66 C164 66 178 72 178 ${bottom+6} C170 ${bottom} 160 ${bottom} 150 ${bottom} C140 ${bottom} 130 ${bottom} 122 ${bottom+6} Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
-  if(T==="rizado"){const pts=b==="lado"?[[130,92],[140,86],[151,82],[162,82],[172,86]]:[130,140,150,160,170].map(x=>[x,bottom]);pts.forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="5.5" fill="${HAIR}"/>`);}
+  if(T==="rizado"){const pts=b==="cortina"?[[130,90],[138,80],[162,80],[170,90]]:b==="lado"?[[130,92],[140,86],[151,82],[162,82],[172,86]]:[130,140,150,160,170].map(x=>[x,bottom]);pts.forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="5.5" fill="${HAIR}"/>`);}
   else if(T==="ondulado" && b!=="lado") s+=`<path d="M128 ${bottom+1} q5 4 10 0 q5 4 10 0 q5 4 10 0 q5 4 10 0" fill="none" stroke="${HAIR}" stroke-width="3" stroke-linecap="round"/>`;
   return s;
 }
@@ -545,22 +561,23 @@ function fBangs(){
 const mLong=()=>X.len==="largo";
 function mHairBack(){
   if(X.len==="rapado") return "";
-  const T=X.type; let s="";
+  const T=htype(); let s="";
   if(X.style==="mullet"){const Y=mLong()?182:150;
     s+=`<path d="M126 92 L174 92 L176 ${Y-10} Q150 ${Y+6} 124 ${Y-10} Z" fill="${HAIR}"${HC}/>`;
     if(T==="rizado") [132,150,168].forEach(x=>s+=`<circle cx="${x}" cy="${Y-8}" r="8" fill="${HAIR}"${HC}/>`);
     return s;}
   if(X.style==="cola") return bun(150,58,mLong()?15:11,T)+tie(150,66,0);
+  if(X.style==="afro"){const R=mLong()?44:(X.len==="medio"?38:33);let a=`<circle cx="150" cy="82" r="${R}" fill="${HAIR}"${HC}/>`;for(let k=0;k<14;k++){const t=k/14*Math.PI*2;a+=`<circle cx="${(150+Math.cos(t)*R).toFixed(1)}" cy="${(82+Math.sin(t)*R).toFixed(1)}" r="7" fill="${HAIR}"${HC}/>`;}return a;}
   if(X.style==="mediacola") s+=tail([150,62],[176,40],[178,70],mLong()?16:12,T,false,false)+tie(152,64,-30);
-  if(mLong()&&["lado","librito","atras","adelante","mediacola"].includes(X.style)) s+=`<path d="M120 86 L180 86 L182 150 L118 150 Z" fill="${HAIR}"/>`;
+  if(mLong()&&["lado","librito","atras","adelante","mediacola","raya","despeinado"].includes(X.style)) s+=`<path d="M120 86 L180 86 L182 150 L118 150 Z" fill="${HAIR}"/>`;
   return s;
 }
 function mHairSides(){
-  if(!mLong()||!["lado","librito","atras","adelante","mediacola"].includes(X.style)) return "";
-  return tail([124,82],[112,104],[115,160],20,X.type,false,true)+tail([176,82],[188,104],[185,160],20,X.type,true,true);
+  if(!mLong()||!["lado","librito","atras","adelante","mediacola","raya","despeinado"].includes(X.style)) return "";
+  return tail([124,82],[112,104],[115,160],20,htype(),false,true)+tail([176,82],[188,104],[185,160],20,htype(),true,true);
 }
 function mHairCap(){
-  const T=X.type, L=X.len;
+  const T=htype(), L=X.len;
   if(L==="rapado") return `<path d="${capPath(98)}" fill="${HAIR}" opacity=".45"/>`;
   const fade=L==="fadealto"||L==="fadebajo";
   let s="";
@@ -574,14 +591,25 @@ function mHairCap(){
   if(st2==="lado") s+=`<path d="M126 70 C138 52 170 52 178 72 C168 66 150 66 126 70Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/><path d="M124 90 C134 66 166 62 180 84 C168 74 148 74 124 90Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/>`;
   else if(st2==="atras") s+=`<path d="M126 74 C128 50 172 50 174 74 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/><path d="M136 70 Q146 58 160 60 M140 76 Q150 66 166 68" fill="none" stroke="${WHITE}" stroke-width="1.5" stroke-linecap="round"/>`;
   else if(st2==="librito") s+=`<path d="M150 66 L150 78" stroke="${WHITE}" stroke-width="1.6"/><path d="M150 72 C138 72 128 82 124 98 C132 90 140 84 150 80Z M150 72 C162 72 172 82 176 98 C168 90 160 84 150 80Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/>`;
+  else if(st2==="raya") s+=`<path d="M126 70 C138 52 170 52 178 72 C168 66 150 66 126 70Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/><path d="M124 90 C134 66 166 62 180 84 C168 74 148 74 124 90Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/><path d="M136 64 L130 86" stroke="${WHITE}" stroke-width="2" stroke-linecap="round"/>`;
+  else if(st2==="copete") s+=`<path d="M124 86 C120 58 136 42 156 44 C174 46 182 62 176 86 C168 70 150 64 124 86Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/><path d="M140 56 Q152 48 166 56" fill="none" stroke="${WHITE}" stroke-width="1.5" stroke-linecap="round"/>`;
+  else if(st2==="cresta") s+=`<path d="M134 76 L138 54 L145 66 L150 44 L155 66 L162 54 L166 76 Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  else if(st2==="despeinado") s+=`<path d="M122 88 L124 68 L132 72 L134 58 L142 66 L148 52 L154 64 L162 54 L166 68 L174 62 L178 88 C168 76 132 76 122 88Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4" stroke-linejoin="round"/>`;
+  else if(st2==="trenzas") s+=`<path d="M134 70 L129 92 M142 66 L139 92 M150 65 L150 92 M158 66 L161 92 M166 70 L171 92" fill="none" stroke="${WHITE}" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 3"/>`;
   else if(st2==="adelante") s+=`<path d="M124 90 C126 70 140 64 150 64 C162 64 176 70 176 90 C168 82 160 84 150 82 C140 84 132 82 124 90Z" fill="${HAIR}" stroke="${HS}" stroke-width="2.4"/>`;
-  if(T==="rizado") [[124,90],[128,77],[138,68],[150,64],[162,68],[172,77],[176,90]].forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="${HAIR}"${HC}/>`);
+  if(T==="rizado" && !["trenzas","cresta","copete"].includes(st2)) [[124,90],[128,77],[138,68],[150,64],[162,68],[172,77],[176,90]].forEach(p=>s+=`<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="${HAIR}"${HC}/>`);
   else if(T==="ondulado" && st2!=="librito") s+=`<path d="M134 72 q4 -4 8 0 q4 4 8 0 q4 -4 8 0" fill="none" stroke="${WHITE}" stroke-width="1.4" stroke-linecap="round"/>`;
   return s;
 }
 function mFace(){
   const f=X.face, H=HAIR;
   if(f==="barba") return `<path d="M122 102 C122 128 136 140 150 140 C164 140 178 128 178 102 C176 114 168 124 150 124 C132 124 124 114 122 102Z" fill="${H}"${HC}/><path d="M140 112 Q150 107 160 112 Q150 110 140 112Z" fill="${H}" stroke="${H}" stroke-width="3" stroke-linejoin="round"/>`;
+  const must=`<path d="M139 112 Q150 106 161 112 Q150 110 139 112Z" fill="${H}" stroke="${H}" stroke-width="3.5" stroke-linejoin="round"/>`;
+  if(f==="sombra") return `<path d="M122 102 C122 128 136 140 150 140 C164 140 178 128 178 102 C176 114 168 124 150 124 C132 124 124 114 122 102Z" fill="${H}" opacity=".28"/><path d="M139 112 Q150 107 161 112" fill="none" stroke="${H}" stroke-width="2.5" opacity=".35"/>`;
+  if(f==="barbalarga") return `<path d="M122 102 C121 136 136 160 150 164 C164 160 179 136 178 102 C176 114 168 124 150 124 C132 124 124 114 122 102Z" fill="${H}"${HC}/>`+must;
+  if(f==="barbabigote") return `<path d="M123 108 C124 128 136 136 150 136 C164 136 176 128 177 108 C172 118 164 124 150 124 C136 124 128 118 123 108Z" fill="${H}"${HC}/>`+`<path d="M137 112 Q150 103 163 112 Q150 110 137 112Z" fill="${H}" stroke="${H}" stroke-width="5" stroke-linejoin="round"/>`;
+  if(f==="herradura") return must+`<path d="M140 112 L139 131 M160 112 L161 131" stroke="${H}" stroke-width="4.5" stroke-linecap="round"/>`;
+  if(f==="manubrio") return must+`<path d="M140 112 q-9 1 -9 -6 q0 -3 3 -3 M160 112 q9 1 9 -6 q0 -3 -3 -3" fill="none" stroke="${H}" stroke-width="3" stroke-linecap="round"/>`;
   if(f==="bigote") return `<path d="M139 112 Q150 106 161 112 Q150 110 139 112Z" fill="${H}" stroke="${H}" stroke-width="3.5" stroke-linejoin="round"/>`;
   if(f==="perilla") return `<ellipse cx="150" cy="128" rx="7" ry="5" fill="${H}"${HC}/>`;
   if(f==="patillas") return `<path d="M121 94 L127 94 L127 114 L122 112 Z M179 94 L173 94 L173 114 L178 112 Z" fill="${H}"/>`;
@@ -789,16 +817,22 @@ function charSVG(){
 function fHairText(){
   const L=find("len",X.len).en, T=find("type",X.type).en, b=find("bangs",X.bangs).en, bs={corto:"small",medio:"round",largo:"big"}[X.len];
   const h={recogido:`${L} ${T} hair gathered into a ${bs} bun`,dosmonos:`${L} ${T} hair styled in two ${bs} space buns`,doscolas:`${L} ${T} hair tied in two pigtails`,
-    unacola:`${L} ${T} hair tied in a high ponytail`,mediacola:`${L} ${T} hair worn in a half-up half-down style with a small ponytail on top`}[X.style]||`${L} ${T} loose hair`;
+    unacola:`${L} ${T} hair tied in a high ponytail`,
+    mediomono:`${L} ${T} hair worn half-up with a small top bun and the rest loose`,colabaja:`${L} ${T} hair tied in a low ponytail draped over one shoulder`,
+    trenza:`${L} ${T} hair woven into a single thick braid falling over one shoulder`,dostrenzas:`${L} ${T} hair in two long braids`,
+    bob:`a ${T} chin-length bob cut`,pixie:`a short ${T} pixie cut`,afro:`voluminous ${T} hair worn in a big rounded afro`,mediacola:`${L} ${T} hair worn in a half-up half-down style with a small ponytail on top`}[X.style]||`${L} ${T} loose hair`;
   return b?`${h} and ${b}`:h;
 }
 function mHairText(){
   const T=find("type",X.type).en, Ln=X.len;
   if(Ln==="rapado") return "a clean buzz cut";
-  const L = Ln==="largo"?"long":"short";
+  const L = Ln==="largo"?"long":(Ln==="medio"?"medium-length":"short");
   const ph={lado:`${L} ${T} hair swept to one side`,mullet:`a ${T} mullet, short on top and ${Ln==="largo"?"long":"medium-length"} at the back`,
     librito:`${L} ${T} middle-parted curtain hair`,atras:`${L} ${T} slicked-back hair`,cola:`${L} ${T} hair tied back into a small man bun`,
-    mediacola:`${L} ${T} hair in a half-up man bun with the rest loose`,adelante:`${L} ${T} hair brushed forward into a short fringe`}[X.style];
+    mediacola:`${L} ${T} hair in a half-up man bun with the rest loose`,adelante:`${L} ${T} hair brushed forward into a short fringe`,
+    raya:`${L} ${T} hair combed to the side with a sharp side part`,copete:`${L} ${T} hair styled up into a pompadour quiff`,
+    cresta:`${L} ${T} faux hawk with the hair spiked up at the center`,despeinado:`${L} ${T} messy textured hair`,
+    trenzas:`short cornrow braids running back from the forehead`,afro:`a rounded ${T} afro`}[X.style];
   const fd = Ln==="fadealto"?"high":(Ln==="fadebajo"?"low":null);
   if(fd && X.style==="mullet") return `a ${T} mullet haircut with a ${fd} fade on the sides, short on top and medium-length at the back of the neck`;
   if(fd) return `a ${fd} fade on the sides with ${ph} on top`;
