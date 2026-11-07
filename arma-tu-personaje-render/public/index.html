@@ -301,7 +301,10 @@ const BOTTOMS=[
   {id:"skinny",name:"Pantalón skinny",en:"skinny trousers",cName:"the skinny trousers",word:"trousers"},
   {id:"oversizep",name:"Pantalón oversize",en:"wide-leg oversized trousers",cName:"the wide-leg trousers",word:"trousers"},
   {id:"ejecutivo",name:"Pantalón ejecutivo",en:"tailored straight executive trousers with a center crease",cName:"the executive trousers",word:"trousers"},
-  {id:"sport",name:"Pantalón sport",en:"sporty jogger trousers with elastic ankle cuffs and a thin side stripe",cName:"the jogger trousers",word:"joggers"}];
+  {id:"sport",name:"Pantalón sport",en:"sporty jogger trousers with elastic ankle cuffs and a thin side stripe",cName:"the jogger trousers",word:"joggers"},
+  {id:"cargo",name:"Jean cargo",en:"loose cargo jeans with large flap pockets on the side of the thighs",cName:"the cargo jeans",word:"jeans"},
+  {id:"jean",name:"Jean recto",en:"classic straight-leg jeans with visible stitching and rolled-up cuffs",cName:"the jeans",word:"jeans"},
+  {id:"bermuda",name:"Bermuda",en:"knee-length tailored bermuda shorts",cName:"the bermuda shorts",word:"shorts"}];
 const OPT={
  f:{
   len:[{id:"largo",name:"Largo",en:"long"},{id:"medio",name:"Medio",en:"shoulder-length"},{id:"corto",name:"Corto",en:"short"}],
@@ -313,9 +316,15 @@ const OPT={
     {id:"blusa",name:"Blusa",en:"a long-sleeve blouse with buttoned cuffs and a small bow at the neckline",cName:"the blouse",auto:"bottom"},
     {id:"blazer",name:"Blazer",en:"a structured blazer over a plain white top",cName:"the blazer",auto:"top"},
     {id:"jacket",name:"Jacket",en:"a casual zip-up jacket worn open over a plain white t-shirt",cName:"the jacket",auto:"top"},
-    {id:"hoodie",name:"Hoodie",en:"an oversized hoodie with drawstrings",cName:"the hoodie",auto:"top"}],
-  bottom:[BOTTOMS[0],{id:"falda",name:"Falda",en:"a knee-length A-line skirt",cName:"the skirt",word:"skirt"},BOTTOMS[1],BOTTOMS[2],BOTTOMS[3]],
-  shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"tacones",name:"Tacones",en:"pointed-toe heels"},{id:"casuales",name:"Casuales",en:"simple ballet flats"},{id:"formales",name:"Formales",en:"polished formal loafers"}],
+    {id:"hoodie",name:"Hoodie",en:"an oversized hoodie with drawstrings",cName:"the hoodie",auto:"top"},
+    {id:"estampada",name:"Blusa estampada",en:"a short-sleeve relaxed blouse with a simple bold leaf print in white",cName:"the printed blouse",auto:"top"},
+    {id:"camisa",name:"Camisa de vestir",en:"a crisp button-down shirt with sleeves rolled up to the forearms, tucked in",cName:"the button-down shirt",auto:"top"},
+    {id:"cardigan",name:"Cárdigan",en:"a soft knit cardigan buttoned over a plain white top",cName:"the cardigan",auto:"top"},
+    {id:"sueter",name:"Suéter cuello alto",en:"a fitted ribbed turtleneck sweater",cName:"the turtleneck sweater",auto:"top"},
+    {id:"cuadros",name:"Camisa a cuadros",en:"an open plaid flannel overshirt over a plain white t-shirt",cName:"the plaid overshirt",auto:"top"},
+    {id:"bomber",name:"Bomber",en:"a bomber jacket with ribbed collar, cuffs and hem, worn open over a white t-shirt",cName:"the bomber jacket",auto:"top"}],
+  bottom:[BOTTOMS[0],{id:"falda",name:"Falda",en:"a knee-length A-line skirt",cName:"the skirt",word:"skirt"},{id:"faldalarga",name:"Falda larga plisada",en:"a pleated midi skirt reaching mid-calf",cName:"the pleated skirt",word:"skirt"},BOTTOMS[1],BOTTOMS[2],BOTTOMS[3],BOTTOMS[4],BOTTOMS[5],BOTTOMS[6]],
+  shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"tacones",name:"Tacones",en:"pointed-toe heels"},{id:"casuales",name:"Casuales",en:"simple ballet flats"},{id:"formales",name:"Formales",en:"polished formal loafers"},{id:"botines",name:"Botines",en:"ankle boots with a small block heel"},{id:"botas",name:"Botas",en:"chunky lace-up leather boots"}],
   acc:[
     {id:"lentes",name:"Lentes",en:"large round thin-rimmed glasses"},
     {id:"audifonos",name:"Audífonos",en:"big over-ear headphones resting around the neck"},
@@ -330,8 +339,11 @@ const OPT={
     {id:"pulseras",name:"Pulseras",en:"a few thin bracelets on one wrist",acc:"one bracelet"},
     {id:"piercing",name:"Piercing",en:"a small eyebrow piercing",acc:"the piercing"},
     {id:"tatuajes",name:"Tatuajes",en:"a small simple line-art tattoo on the forearm"},
-    {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"}],
-  accOrder:["panoleta","collar","reloj","aretes","pulseras","piercing","cintillo"]
+    {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"},
+    {id:"bufanda",name:"Bufanda",en:"a soft knit scarf loosely wrapped around the neck",acc:"the scarf"},
+    {id:"bandolera",name:"Bandolera",en:"a small crossbody bag on a thin strap",acc:"the crossbody bag"},
+    {id:"mochila",name:"Mochila",en:"a backpack worn with both straps over the shoulders"}],
+  accOrder:["panoleta","collar","reloj","aretes","pulseras","piercing","cintillo","bandolera","bufanda"]
  },
  m:{
   len:[{id:"rapado",name:"Rapado"},{id:"fadealto",name:"Fade alto"},{id:"fadebajo",name:"Fade bajo"},{id:"corto",name:"Corto"},{id:"largo",name:"Largo"}],
@@ -345,9 +357,16 @@ const OPT={
     {id:"chaleco",name:"Chaleco",en:"a knit V-neck sweater vest over a white long-sleeve collared shirt",cName:"the vest",auto:"top"},
     {id:"hoodie",name:"Hoodie con capucha",en:"a hoodie with drawstrings and the hood resting behind the neck",cName:"the hoodie",auto:"top"},
     {id:"franela",name:"Franela",en:"a fitted crew-neck t-shirt",cName:"the t-shirt",auto:"bottom"},
-    {id:"polo",name:"Polo",en:"a short-sleeve polo shirt with a buttoned placket",cName:"the polo shirt",auto:"top"}],
+    {id:"polo",name:"Polo",en:"a short-sleeve polo shirt with a buttoned placket",cName:"the polo shirt",auto:"top"},
+    {id:"polomanga",name:"Polo manga larga",en:"a long-sleeve polo shirt with a buttoned placket and ribbed cuffs",cName:"the long-sleeve polo",auto:"top"},
+    {id:"estampada",name:"Camisa estampada",en:"a short-sleeve camp-collar button-up shirt with a simple bold leaf print in white",cName:"the printed shirt",auto:"top"},
+    {id:"camisa",name:"Camisa de vestir",en:"a crisp button-down shirt with sleeves rolled up to the forearms",cName:"the button-down shirt",auto:"top"},
+    {id:"cuadros",name:"Camisa a cuadros",en:"an open plaid flannel overshirt over a plain white t-shirt",cName:"the plaid overshirt",auto:"top"},
+    {id:"sueter",name:"Suéter cuello alto",en:"a fitted ribbed turtleneck sweater",cName:"the turtleneck sweater",auto:"top"},
+    {id:"bomber",name:"Bomber",en:"a bomber jacket with ribbed collar, cuffs and hem, worn open over a white t-shirt",cName:"the bomber jacket",auto:"top"},
+    {id:"blazer",name:"Blazer",en:"a structured blazer over a plain white crew-neck t-shirt",cName:"the blazer",auto:"top"}],
   bottom:BOTTOMS,
-  shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"casuales",name:"Casuales",en:"casual canvas slip-on shoes"},{id:"formales",name:"Formales",en:"polished formal oxford shoes"}],
+  shoes:[{id:"tenis",name:"Tenis",en:"chunky sneakers"},{id:"casuales",name:"Casuales",en:"casual canvas slip-on shoes"},{id:"formales",name:"Formales",en:"polished formal oxford shoes"},{id:"mocasines",name:"Mocasines",en:"suede penny loafers"},{id:"botas",name:"Botas",en:"chunky lace-up leather boots"}],
   acc:[
     {id:"aretes",name:"Aretes",en:"a small stud earring",acc:"the earring"},
     {id:"gorra",name:"Gorra",en:"a baseball cap"},
@@ -357,8 +376,12 @@ const OPT={
     {id:"lentes",name:"Lentes",en:"thin-rimmed glasses"},
     {id:"tatuajes",name:"Tatuajes",en:"a small simple line-art tattoo on the forearm"},
     {id:"audifonos",name:"Audífonos",en:"big over-ear headphones resting around the neck"},
-    {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"}],
-  accOrder:["pulseras","aretes","piercing"]
+    {id:"carnet",name:"Carnet",en:"an ID badge on a lanyard"},
+    {id:"reloj",name:"Reloj",en:"a sporty wristwatch",acc:"the watch face"},
+    {id:"corbata",name:"Corbata",en:"a slim necktie",acc:"the tie"},
+    {id:"bufanda",name:"Bufanda",en:"a soft knit scarf loosely wrapped around the neck",acc:"the scarf"},
+    {id:"mochila",name:"Mochila",en:"a backpack worn with both straps over the shoulders"}],
+  accOrder:["pulseras","aretes","piercing","reloj","corbata","bufanda"]
  }
 };
 const ROWS={
@@ -539,12 +562,28 @@ function bottomSVG(c){
   if(b==="sport") return `<path d="M112 240 L188 240 L186 382 L156 382 L150 292 L144 382 L114 382 Z" fill="${c}" ${S}/>
     <rect x="113" y="378" width="32" height="13" rx="5" fill="${c}" ${S}/><rect x="155" y="378" width="32" height="13" rx="5" fill="${c}" ${S}/>
     <path d="M116 250 L117 374 M184 250 L183 374" fill="none" stroke="${k}" stroke-width="2.2" stroke-linecap="round"/><rect x="112" y="240" width="76" height="9" rx="3" fill="${c}" ${S}/>`;
+  if(b==="cargo") return `<path d="M107 240 L193 240 L197 394 L154 394 L150 298 L146 394 L103 394 Z" fill="${c}" ${S}/>
+    <rect x="102" y="298" width="18" height="26" rx="3" fill="${c}" ${S}/><rect x="180" y="298" width="18" height="26" rx="3" fill="${c}" ${S}/>
+    <path d="M102 306 h18 M180 306 h18" ${S}/><line x1="107" y1="248" x2="193" y2="248" ${S}/>`;
+  if(b==="jean") return `<path d="M111 240 L189 240 L189 384 L154 384 L150 296 L146 384 L111 384 Z" fill="${c}" ${S}/>
+    <rect x="110" y="376" width="37" height="12" rx="2" fill="${c}" ${S}/><rect x="153" y="376" width="37" height="12" rx="2" fill="${c}" ${S}/>
+    <path d="M116 250 Q126 262 138 250 M162 250 Q174 262 184 250" fill="none" stroke="${k}" stroke-width="1.4"/>
+    <path d="M118 270 L120 372 M182 270 L180 372" fill="none" stroke="${k}" stroke-width="1.2" stroke-dasharray="3 3" opacity=".7"/><line x1="111" y1="248" x2="189" y2="248" ${S}/>`;
+  if(b==="bermuda") return `<path d="M127 300 L127 392 L143 392 L143 300 Z M157 300 L157 392 L173 392 L173 300 Z" fill="${SKIN}"/>
+    <path d="M109 240 L191 240 L195 318 L154 318 L150 290 L146 318 L105 318 Z" fill="${c}" ${S}/><line x1="109" y1="248" x2="191" y2="248" ${S}/>
+    <path d="M128 262 L127 316 M172 262 L173 316" fill="none" stroke="${k}" stroke-width="1.3" opacity=".55"/>`;
+  if(b==="faldalarga") return `<path d="M129 360 L129 392 L143 392 L143 360 Z M157 360 L157 392 L171 392 L171 360 Z" fill="${SKIN}"/>
+    <path d="M114 238 L186 238 L206 366 Q150 376 94 366 Z" fill="${c}" ${S}/>
+    <path d="M128 250 L118 368 M142 250 L138 371 M158 250 L162 371 M172 250 L182 368" fill="none" stroke="${k}" stroke-width="1.3" opacity=".6"/>`;
   return `<path d="M110 240 L190 240 L191 394 L154 394 L150 296 L146 394 L109 394 Z" fill="${c}" ${S}/><path d="M128 262 L127 392 M172 262 L173 392" fill="none" stroke="${k}" stroke-width="1.3" opacity=".55"/><line x1="110" y1="248" x2="190" y2="248" ${S}/>`;
 }
 function shoesSVG(){
-  const s=X.shoes, b=X.bottom, lx=b==="oversizep"?122:(b==="falda"||b==="skinny"||b==="sport"?131:128), rx=300-lx;
+  const s=X.shoes, b=X.bottom, lx=(b==="oversizep"||b==="cargo")?122:(["falda","skinny","sport","bermuda","faldalarga","jean"].includes(b)?131:128), rx=300-lx;
   if(s==="tacones"){const heel=(x,m)=>{const tip=x-24*m, back=x+16*m;return `<path d="M${back} 392 L${x-10*m} 392 L${tip} 404 L${back} 404 Z" fill="${WHITE}" ${S}/><path d="M${back-3*m} 404 L${back-2*m} 416" stroke="${LINE}" stroke-width="3.5" stroke-linecap="round"/>`;};return heel(lx,1)+heel(rx,-1);}
   const one=x=>{
+    if(s==="botas") return `<path d="M${x-16} 368 h32 v26 q8 0 8 8 v8 h-48 v-8 q0 -8 8 -8 Z" fill="${LINE}" ${S}/><path d="M${x-8} 376 h16 M${x-8} 384 h16" stroke="${WHITE}" stroke-width="1.6" stroke-linecap="round"/><rect x="${x-25}" y="406" width="50" height="7" rx="3" fill="${LINE}"/>`;
+    if(s==="botines") return `<path d="M${x-14} 378 h28 v16 q8 0 8 8 v6 h-44 v-6 q0 -8 8 -8 Z" fill="${LINE}" ${S}/><rect x="${x+8}" y="406" width="7" height="9" fill="${LINE}"/>`;
+    if(s==="mocasines") return `<path d="M${x-20} 392 h40 q8 0 8 10 q0 8 -8 8 h-40 q-6 0 -6 -8 q0 -10 6 -10 Z" fill="${WHITE}" ${S}/><path d="M${x-10} 398 h20" ${S}/>`;
     if(s==="tenis") return `<path d="M${x-20} 390 h40 q4 0 4 6 v8 q0 8 -8 8 h-32 q-8 0 -8 -8 v-8 q0 -6 4 -6 Z" fill="${WHITE}" ${S}/><rect x="${x-24}" y="404" width="48" height="9" rx="4" fill="${LINE}"/><path d="M${x-8} 394 l6 4 M${x} 393 l6 4" ${S}/>`;
     if(s==="casuales") return male()? `<path d="M${x-20} 394 h40 q6 0 6 8 v4 q0 6 -6 6 h-40 q-6 0 -6 -6 v-4 q0 -8 6 -8 Z" fill="${WHITE}" ${S}/><path d="M${x-24} 406 h48" ${S}/>`
                                        : `<path d="M${x-20} 396 h40 q6 0 6 8 q0 6 -6 6 h-40 q-6 0 -6 -6 q0 -8 6 -8 Z" fill="${WHITE}" ${S}/><path d="M${x-12} 400 h24" ${S}/>`;
@@ -558,6 +597,24 @@ const sleevesShort=(c,wide)=>`<path d="${armL}" fill="${SKIN}"/><path d="${armR}
   `<path d="M112 150 C104 160 101 168 100 180 L121 182 C121 172 122 166 124 160 Z" fill="${c}" ${S}/><path d="M188 150 C196 160 199 168 200 180 L179 182 C179 172 178 166 176 160 Z" fill="${c}" ${S}/>`);
 function topSVG(c){
   const t=X.top, on=c===WHITE?LINE:WHITE;
+  const torso=`<path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 250 L110 250 Z" fill="${c}" ${S}/>`;
+  const cuffs=`<rect x="94" y="226" width="24" height="10" rx="4" fill="${c}" ${S}/><rect x="182" y="226" width="24" height="10" rx="4" fill="${c}" ${S}/>`;
+  const longSl=`<path d="M112 148 C98 166 94 204 96 232 L116 232 C116 200 120 176 126 160 Z" fill="${c}" ${S}/><path d="M188 148 C202 166 206 204 204 232 L184 232 C184 200 180 176 174 160 Z" fill="${c}" ${S}/>`;
+  const rolled=`<path d="${armL}" fill="${SKIN}"/><path d="${armR}" fill="${SKIN}"/><path d="M112 148 C101 164 97 184 97 204 L119 206 C119 188 121 172 126 160 Z" fill="${c}" ${S}/><path d="M188 148 C199 164 203 184 203 204 L181 206 C181 188 179 172 174 160 Z" fill="${c}" ${S}/><rect x="96" y="198" width="24" height="9" rx="4" fill="${c}" ${S}/><rect x="180" y="198" width="24" height="9" rx="4" fill="${c}" ${S}/>`;
+  const collar=`<path d="M140 136 L150 150 L132 150 Z M160 136 L150 150 L168 150 Z" fill="${c}" ${S}/>`;
+  const btns=n=>`<path d="M150 150 L150 248" stroke="${on}" stroke-width="1.4"/>`+Array.from({length:n},(_,i)=>`<circle cx="150" cy="${160+i*20}" r="1.9" fill="${on}"/>`).join("");
+  const leaf=(x,y)=>`<path d="M${x} ${y} q6 -8 12 0 q-6 8 -12 0 Z M${x} ${y} h12" fill="${on}" stroke="${on}" stroke-width=".8" opacity=".9"/>`;
+  if(t==="camisa") return rolled+torso+collar+btns(5);
+  if(t==="estampada") return sleevesShort(c,false)+torso+`<path d="M138 136 L150 158 L162 136 Z" fill="${SKIN}"/><path d="M138 136 L150 158 L128 150 Z M162 136 L150 158 L172 150 Z" fill="${c}" ${S}/>`+btns(4)+[[122,176],[166,170],[124,214],[170,206],[140,232],[164,236]].map(([x,y])=>leaf(x,y)).join("");
+  if(t==="polomanga") return longSl+cuffs+torso+`<path d="M140 136 L150 148 L134 148 Z M160 136 L150 148 L166 148 Z" fill="${c}" ${S}/><path d="M150 148 L150 172" stroke="${on}" stroke-width="1.6"/><circle cx="150" cy="156" r="1.8" fill="${on}"/><circle cx="150" cy="166" r="1.8" fill="${on}"/>`;
+  if(t==="sueter") return longSl+cuffs+torso+`<rect x="132" y="124" width="36" height="20" rx="8" fill="${c}" ${S}/><path d="M136 128 v12 M142 128 v12 M148 128 v12 M154 128 v12 M160 128 v12 M166 128 v12" stroke="${on}" stroke-width="1" opacity=".5"/><rect x="110" y="242" width="80" height="10" rx="3" fill="${c}" ${S}/>`;
+  if(t==="cuadros"){const pl=`stroke="${on}" stroke-width="1.6" opacity=".55"`;return sleevesLong(c)+cuffs+`<path d="M108 150 Q112 138 130 136 L170 136 Q188 138 192 150 L194 256 L106 256 Z" fill="${c}" ${S}/><path d="M140 137 L160 137 L158 256 L142 256 Z" fill="${WHITE}" ${S}/><path d="M142 140 Q150 148 158 140" fill="none" ${S}/><path d="M124 140 V254 M132 138 V254 M168 138 V254 M176 140 V254 M108 176 H140 M160 176 H192 M107 214 H142 M158 214 H193 M102 192 L116 190 M184 190 L198 192" ${pl}/><path d="M130 135 L141 138 L137 154 Z M170 135 L159 138 L163 154 Z" fill="${c}" ${S}/>`;}
+  if(t==="bomber") return sleevesLong(c)+`<rect x="93" y="226" width="26" height="11" rx="4" fill="${c}" ${S}/><rect x="181" y="226" width="26" height="11" rx="4" fill="${c}" ${S}/>
+    <path d="M108 150 Q112 138 130 136 L170 136 Q188 138 192 150 L194 250 L106 250 Z" fill="${c}" ${S}/><path d="M140 137 L160 137 L158 250 L142 250 Z" fill="${WHITE}" ${S}/>
+    <path d="M128 138 Q150 128 172 138 L168 146 Q150 138 132 146 Z" fill="${c}" ${S}/><rect x="104" y="244" width="92" height="14" rx="5" fill="${c}" ${S}/>
+    <path d="M110 250 h32 M158 250 h32 M95 231 h22 M183 231 h22" stroke="${on}" stroke-width="1.2" opacity=".6"/><path d="M118 172 l14 0" stroke="${on}" stroke-width="1.6" stroke-linecap="round"/>`;
+  if(t==="cardigan") return longSl+cuffs+torso+`<path d="M134 139 L150 182 L166 139 Z" fill="${WHITE}" ${S}/><path d="M150 182 L150 250" stroke="${on}" stroke-width="1.4"/>${[196,214,232].map(y=>`<circle cx="150" cy="${y}" r="2.2" fill="${on}"/>`).join("")}<rect x="110" y="242" width="80" height="10" rx="3" fill="${c}" ${S}/>`;
+
   if(t==="oversize") return sleevesShort(c,true)+`<path d="M106 148 Q110 138 130 136 L170 136 Q190 138 194 148 L198 264 L102 264 Z" fill="${c}" ${S}/><path d="M136 137 Q150 152 164 137" fill="none" ${S}/>`;
   if(t==="franela") return sleevesShort(c,false)+`<path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 250 L110 250 Z" fill="${c}" ${S}/><path d="M138 138 Q150 150 162 138" fill="none" ${S}/>`;
   if(t==="polo") return sleevesShort(c,false)+`<path d="M112 150 Q114 140 130 138 L170 138 Q186 140 188 150 L190 250 L110 250 Z" fill="${c}" ${S}/>
@@ -605,12 +662,16 @@ const F=k=>accentIsAcc(k)?ACC:WHITE;
 const has=k=>X.acc.includes(k);
 function accBody(){
   let s="";
+  if(has("mochila")) s+=`<path d="M120 146 Q124 190 122 238 M180 146 Q176 190 178 238" fill="none" stroke="${LINE}" stroke-width="6" stroke-linecap="round"/>`;
+  if(has("bandolera")) s+=`<path d="M128 140 L176 232" stroke="${LINE}" stroke-width="2.4"/><rect x="166" y="226" width="28" height="22" rx="5" fill="${F("bandolera")}" ${S}/><path d="M166 234 h28" ${S}/>`;
   if(has("carnet")) s+=`<path d="M140 140 L147 198 M160 140 L153 198" fill="none" stroke="${LINE}" stroke-width="1.6"/><rect x="141" y="196" width="18" height="22" rx="2" fill="${WHITE}" ${S}/><path d="M145 206 h10" stroke="${LINE}" stroke-width="1.6"/>`;
-  if(has("tatuajes") && ["franela","polo","oversize"].includes(X.top)) s+=`<path d="M104 200 l4 6 l4 -6 M103 212 q5 4 10 0 M106 220 l4 -3" fill="none" stroke="${LINE}" stroke-width="1.5" stroke-linecap="round"/>`;
+  if(has("tatuajes") && ["franela","polo","oversize","estampada","camisa"].includes(X.top)) s+=`<path d="M104 200 l4 6 l4 -6 M103 212 q5 4 10 0 M106 220 l4 -3" fill="none" stroke="${LINE}" stroke-width="1.5" stroke-linecap="round"/>`;
   return s;
 }
 function accNeck(){
   let s="";
+  if(has("corbata")) s+=`<path d="M146 144 L154 144 L152 152 L158 206 L150 216 L142 206 L148 152 Z" fill="${F("corbata")}" ${S}/>`;
+  if(has("bufanda")) s+=`<path d="M126 136 Q150 154 174 136 L176 150 Q150 168 124 150 Z" fill="${F("bufanda")}" ${S}/><path d="M156 152 L154 206 L170 206 L170 150 Z" fill="${F("bufanda")}" ${S}/><path d="M156 206 v6 M160 206 v6 M164 206 v6 M168 206 v6" stroke="${LINE}" stroke-width="1.4"/>`;
   if(has("collar")) s+=`<path d="M136 140 Q150 160 164 140" fill="none" stroke="${LINE}" stroke-width="1.6"/><circle cx="150" cy="153" r="4" fill="${F("collar")}" ${S}/>`;
   if(has("panoleta")) s+=`<path d="M133 138 Q150 150 167 138 L163 146 Q150 154 137 146 Z" fill="${F("panoleta")}" ${S}/><path d="M150 148 L140 170 L152 165 Z" fill="${F("panoleta")}" ${S}/><circle cx="150" cy="149" r="4" fill="${F("panoleta")}" ${S}/>`;
   if(has("audifonos")) s+=`<path d="M126 142 Q150 168 174 142" fill="none" stroke="${LINE}" stroke-width="5" stroke-linecap="round"/><ellipse cx="124" cy="140" rx="11" ry="13" fill="${WHITE}" ${S}/><ellipse cx="124" cy="140" rx="5" ry="7" fill="${LINE}"/><ellipse cx="176" cy="140" rx="11" ry="13" fill="${WHITE}" ${S}/><ellipse cx="176" cy="140" rx="5" ry="7" fill="${LINE}"/>`;
