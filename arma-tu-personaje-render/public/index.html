@@ -71,11 +71,12 @@ button:focus-visible,select:focus-visible{outline:2px solid #16161a;outline-offs
 .hero-copy .kicker{font-size:12px;color:var(--ink2);display:flex;align-items:center;gap:8px}
 .hero-copy .kicker i{width:8px;height:8px;border-radius:50%;background:var(--glow);box-shadow:0 0 12px var(--glow)}
 .hero-copy h3{font-family:var(--f-title);font-weight:800;font-size:clamp(28px,4vw,44px);line-height:1.05;margin:0;letter-spacing:-.01em}
-.go{align-self:flex-start;background:#111114;color:#fff;border:0;border-radius:14px;padding:14px 26px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:10px;box-shadow:0 12px 28px -12px rgba(17,17,20,.45)}
+.go{align-self:flex-start;background:var(--glow);color:#fff;transition:background .3s,transform .15s;border:0;border-radius:14px;padding:14px 26px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:10px;box-shadow:0 12px 28px -12px color-mix(in srgb,var(--glow) 70%,transparent)}
+.go:hover:not(:disabled){transform:translateY(-1px)}
 .go:disabled{opacity:.6;cursor:default}
 .go svg{width:16px;height:16px}
 .cmsg{font-size:12.5px;color:var(--muted);max-width:34ch}
-.confirm[data-state="ok"] .cmsg{color:var(--ok)}
+.confirm[data-state="ok"] .cmsg{color:var(--glow);font-weight:600}
 .confirm[data-state="dirty"] .cmsg{color:var(--warn)}
 .confirm[data-state="error"] .cmsg{color:var(--bad)}
 .confirm{display:flex;flex-direction:column;gap:10px}
@@ -170,6 +171,24 @@ select option{background:#fff;color:#16161a}
   .hero .hero-logo img{max-height:34px;max-width:110px}
   .hero .statbar{display:none}
 }
+/* Animación de registro */
+.burst{position:absolute;left:50%;top:52%;width:0;height:0;z-index:4;pointer-events:none}
+.burst .ring{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:50%;border:3px solid var(--glow);opacity:0}
+.burst .dot{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:var(--glow);opacity:0}
+.burst .dot:nth-child(3n){background:#ebca0a;width:8px;height:8px}
+.burst .badge{position:absolute;left:62px;top:-170px;width:68px;height:68px;border-radius:50%;background:#fff;border:3px solid var(--glow);display:grid;place-items:center;opacity:0;box-shadow:0 14px 30px -10px color-mix(in srgb,var(--glow) 80%,transparent)}
+.hero .stagewrap .burst .badge svg{width:34px;height:34px;min-height:0;max-height:none;margin:0;fill:none;stroke:var(--glow);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:30}
+.hero.saved #preview{animation:hop .9s cubic-bezier(.3,1.4,.5,1)}
+.hero.saved .burst .ring{animation:ring 1s ease-out .25s}
+.hero.saved .burst .dot{animation:fly 1s ease-out .3s}
+.hero.saved .burst .badge{animation:badge 2.6s ease .35s}
+.hero.saved .burst .badge svg{animation:draw .5s ease .6s forwards}
+@keyframes hop{0%{transform:translateY(0) scale(1)}20%{transform:translateY(6px) scale(1.04,.95)}45%{transform:translateY(-26px) scale(.97,1.04)}70%{transform:translateY(0) scale(1.03,.97)}100%{transform:none}}
+@keyframes ring{0%{opacity:.8;transform:scale(.3)}100%{opacity:0;transform:scale(1.8)}}
+@keyframes fly{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
+@keyframes badge{0%{opacity:0;transform:scale(.2)}15%{opacity:1;transform:scale(1.12)}25%{transform:scale(1)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.9)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.hero.saved #preview,.hero.saved .burst .ring,.hero.saved .burst .dot{animation:none}}
 </style>
 </head>
 <body>
@@ -193,6 +212,7 @@ select option{background:#fff;color:#16161a}
         <div class="stagewrap">
           <div class="hero-logo" id="heroLogo" aria-hidden="false"></div>
           <svg id="preview" viewBox="0 0 300 440" role="img" aria-label="Vista previa del personaje"></svg>
+          <div class="burst" aria-hidden="true"><span class="ring"></span><i class="dot" style="--dx:0px;--dy:-130px"></i><i class="dot" style="--dx:92px;--dy:-92px"></i><i class="dot" style="--dx:130px;--dy:0px"></i><i class="dot" style="--dx:92px;--dy:92px"></i><i class="dot" style="--dx:0px;--dy:130px"></i><i class="dot" style="--dx:-92px;--dy:92px"></i><i class="dot" style="--dx:-130px;--dy:0px"></i><i class="dot" style="--dx:-92px;--dy:-92px"></i><i class="dot" style="--dx:50px;--dy:-120px"></i><i class="dot" style="--dx:-120px;--dy:50px"></i><i class="dot" style="--dx:120px;--dy:-50px"></i><i class="dot" style="--dx:-50px;--dy:120px"></i><span class="badge"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></div>
         </div>
         <div class="statbar">
           <div class="stat" id="stCoWrap"><b id="stCo">Paguetodo</b><span><i id="stCoDot"></i>Empresa</span></div>
@@ -952,7 +972,7 @@ const sigOf=x=>{const sub=x[x.sex]||{};return JSON.stringify([x.sex,x.company,x.
 function paintConfirm(){
   if(sending) return;
   const box=document.getElementById("confirmBox"), msg=document.getElementById("confirmMsg");
-  if(sentSig&&sentSig===sigOf(st)){box.dataset.state="ok";msg.textContent="Personaje registrado para tu departamento. El equipo de marca generará la ilustración con esta selección.";}
+  if(sentSig&&sentSig===sigOf(st)){box.dataset.state="ok";msg.textContent="Personaje registrado para tu departamento, pronto se generará la ilustración con esta selección.";}
   else if(sentSig){box.dataset.state="dirty";msg.textContent="Hiciste cambios después de enviar. Pulsa Generar personaje otra vez para enviar la versión nueva.";}
   else {box.dataset.state="idle";msg.textContent="Cuando termines de combinar, pulsa Generar personaje para registrarlo en tu departamento.";}
 }
@@ -973,6 +993,9 @@ document.getElementById("confirmBox").addEventListener("submit",async ev=>{
     const d=await r.json().catch(()=>({}));
     if(!r.ok) throw new Error(d.error||"No se pudo guardar");
     sentSig=sigOf(st);
+    const h=document.getElementById("s-hero"); h.classList.remove("saved"); void h.offsetWidth; h.classList.add("saved");
+    clearTimeout(window.__savedT); window.__savedT=setTimeout(()=>h.classList.remove("saved"),3200);
+    if(window.matchMedia("(max-width:980px)").matches) h.scrollIntoView({behavior:"smooth",block:"start"});
   }catch(e){sending=false;b.disabled=false;box.dataset.state="error";msg.textContent="No se pudo enviar tu personaje. Revisa tu conexión e inténtalo otra vez.";return;}
   sending=false; b.disabled=false; paintConfirm();
 });
